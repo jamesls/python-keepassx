@@ -5,7 +5,7 @@ import hashlib
 import unittest
 from datetime import datetime
 
-import keepassx
+from keepassx.db import Database, Header
 
 
 def open_data_file(name):
@@ -21,7 +21,7 @@ class TestKeepassX(unittest.TestCase):
     def test_parse_header(self):
         # I've basically created a kdb file via the GUI and am now
         # verifying the header properties.
-        header = keepassx.Header(self.kdb_contents)
+        header = Header(self.kdb_contents)
         self.assertEqual(header.HEADER_SIZE, 124)
         self.assertEqual(header.signature1, 0x9AA2D903)
         self.assertEqual(header.signature2, 0xB54BFB65)
@@ -44,24 +44,24 @@ class TestKeepassX(unittest.TestCase):
 
     def test_database_metadata(self):
         """Header is accessible from database object as the metadata attr."""
-        db = keepassx.Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, 'password')
         self.assertEqual(db.metadata.version, 0x30002)
 
     def test_encryption_type(self):
         # The code will raise an exception if the hash doesn't match
         # but it's also a good thing for us to test.
-        header = keepassx.Header(self.kdb_contents)
+        header = Header(self.kdb_contents)
         self.assertEqual(header.encryption_type, 'Rijndael')
 
     def test_parse_groups_from_decrypted_data(self):
-        db = keepassx.Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, 'password')
         self.assertEqual(len(db.groups), 2)
         self.assertEqual(db.groups[0].group_name, 'Internet')
         self.assertEqual(db.groups[0].groupid, 1876827345)
         self.assertEqual(db.groups[0].level, 0)
 
     def test_parse_entries_from_decrypted_data(self):
-        db = keepassx.Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, 'password')
         self.assertEqual(len(db.entries), 3)
         entry = db.entries[0]
         self.assertEqual(entry.title, 'mytitle')
@@ -76,7 +76,7 @@ class TestKeepassX(unittest.TestCase):
     def test_parse_entries_from_decrypted_data_with_key_file(self):
         kdb_contents = open_data_file('passwordkey.kdb').read()
         key_file = open_data_file('passwordkey.key').name
-        db = keepassx.Database(kdb_contents, 'password', key_file)
+        db = Database(kdb_contents, 'password', key_file)
 
 
 if __name__ == '__main__':
