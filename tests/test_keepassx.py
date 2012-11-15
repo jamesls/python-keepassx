@@ -5,7 +5,7 @@ import hashlib
 import unittest
 from datetime import datetime
 
-from keepassx.db import Database, Header
+from keepassx.db import Database, Header, EntryNotFoundError
 
 
 def open_data_file(name):
@@ -62,7 +62,7 @@ class TestKeepassX(unittest.TestCase):
 
     def test_parse_entries_from_decrypted_data(self):
         db = Database(self.kdb_contents, 'password')
-        self.assertEqual(len(db.entries), 3)
+        self.assertEqual(len(db.entries), 1)
         entry = db.entries[0]
         self.assertEqual(entry.title, 'mytitle')
         self.assertEqual(entry.uuid, 'c4d301502050cd695e353b16094be4a7')
@@ -75,8 +75,32 @@ class TestKeepassX(unittest.TestCase):
 
     def test_parse_entries_from_decrypted_data_with_key_file(self):
         kdb_contents = open_data_file('passwordkey.kdb').read()
-        key_file = open_data_file('passwordkey.key').name
-        db = Database(kdb_contents, 'password', key_file)
+        key_file_contents = open_data_file('passwordkey.key').read()
+        db = Database(kdb_contents, 'password', key_file_contents)
+
+    def test_entries_can_be_grouped_by_groupid(self):
+        db = Database(self.kdb_contents, 'password')
+        self.assertEqual(db.entries[0].group.group_name, 'Internet')
+
+    def test_find_entry_by_uuid(self):
+        db = Database(self.kdb_contents, 'password')
+        entry = db.find_by_uuid('c4d301502050cd695e353b16094be4a7')
+        self.assertEqual(entry.uuid, 'c4d301502050cd695e353b16094be4a7')
+
+    def test_find_entry_does_not_exist(self):
+        db = Database(self.kdb_contents, 'password')
+        with self.assertRaises(EntryNotFoundError):
+            entry = db.find_by_uuid('baduuid')
+
+    def test_find_entry_by_title(self):
+        db = Database(self.kdb_contents, 'password')
+        entry = db.find_by_title('mytitle')
+        self.assertEqual(entry.title, 'mytitle')
+
+    def test_find_entry_by_title_does_not_exist(self):
+        db = Database(self.kdb_contents, 'password')
+        with self.assertRaises(EntryNotFoundError):
+            entry = db.find_by_title('badtitle')
 
 
 if __name__ == '__main__':

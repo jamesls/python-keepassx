@@ -6,6 +6,12 @@ from pprint import pformat
 
 from Crypto.Cipher import AES
 
+SYSTEM_USER_UUID = '00000000000000000000000000000000'
+
+
+class EntryNotFoundError(Exception):
+    pass
+
 
 class Header(object):
     """Header information for the keepass database.
@@ -101,11 +107,11 @@ class Header(object):
 
 
 class Database(object):
-    def __init__(self, contents, password=None, keyfile=None):
+    def __init__(self, contents, password=None, key_file_contents=None):
         self.metadata = Header(contents[:Header.HEADER_SIZE])
         payload = self._decrypt_payload(
             contents[Header.HEADER_SIZE:],
-            self._calculate_key(password, keyfile,
+            self._calculate_key(password, key_file_contents,
                                 self.metadata.master_seed,
                                 self.metadata.master_seed2,
                                 self.metadata.key_encryption_rounds),
@@ -127,17 +133,18 @@ class Database(object):
                              "does not match.")
         return payload
 
-    def _calculate_key(self, password, keyfile, seed1, seed2, num_rounds):
+    def _calculate_key(self, password, key_file_contents,
+                       seed1, seed2, num_rounds):
         # Based on Kdb3Database::setCompositeKey and Kdb3Database::loadReal.
         key = hashlib.sha256(password).digest()
-        if keyfile is not None:
+        if key_file_contents is not None:
             # TODO: The key derivation also supports a few extra
             # modes, if the key file is 32 bytes, use that directly instead of
             # taking the sha256 of the contents, if it's 64 bits, assume
             # it's hex encoded and decode and use the contents directly
             # instead of taking the sha256 hash.  These seem rather esoteric
             # so I'm skipping them for now.
-            file_key = hashlib.sha256(open(keyfile).read()).digest()
+            file_key = hashlib.sha256(key_file_contents).digest()
             key = hashlib.sha256(key + file_key).digest()
         cipher = AES.new(seed2, AES.MODE_ECB)
         for i in xrange(num_rounds):
@@ -147,8 +154,11 @@ class Database(object):
 
     def _parse_payload(self, payload):
         groups, i = self._parse_groups_payload(payload)
+        groups_by_groupid = dict((g.groupid, g) for g in groups)
         payload = payload[i:]
         entries = self._parse_entries_payload(payload)
+        for entry in entries:
+            entry.group = groups_by_groupid[entry.groupid]
         return groups, entries
 
     def _parse_groups_payload(self, payload):
@@ -242,8 +252,21 @@ class Database(object):
                     break
                 else:
                     setattr(entry, name, decoder.decode(field_data))
-            entries.append(entry)
+            if entry.uuid != SYSTEM_USER_UUID:
+                entries.append(entry)
         return entries
+
+    def find_by_uuid(self, uuid):
+        for entry in self.entries:
+            if entry.uuid == uuid:
+                return entry
+        raise EntryNotFoundError("Entry not found for uuid: %s" % uuid)
+
+    def find_by_title(self, title):
+        for entry in self.entries:
+            if entry.title == title:
+                return entry
+        raise EntryNotFoundError("Entry not found for title: %s" % title)
 
 
 class Group(object):
@@ -277,6 +300,10 @@ class Entry(object):
         self.expiration_time = None
         self.binary_desc = None
         self.binary_data = None
+        # This is filled in when the database
+        # is initially loaded (a Group object with
+        # a matching groupid is populated).
+        self.group = None
 
     def __repr__(self):
         return "Entry(uuid=%s, title=%s)" % (
