@@ -5,6 +5,7 @@ import getpass
 
 from keepassx.db import Database, EntryNotFoundError
 from keepassx import clipboard
+from keepassx import __version__
 
 
 def open_db_file(args):
@@ -65,9 +66,11 @@ def do_get(args):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='kp')
     parser.add_argument('-k', '--key-file', type=argparse.FileType('r'))
     parser.add_argument('-d', '--db-file', type=argparse.FileType('r'))
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s version ' + __version__)
     subparsers = parser.add_subparsers()
 
     list_parser = subparsers.add_parser('list', help='List entries')
