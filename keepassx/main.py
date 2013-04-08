@@ -37,8 +37,14 @@ def create_db(args):
         password = getpass.getpass('Password: ')
     db_file = open_db_file(args)
     key_file = open_key_file(args)
+    if key_file is not None:
+        key_file_contents = key_file.read()
+    else:
+        # A key file is optional, so it's ok if no key file
+        # was specified.
+        key_file_contents = None
     db = Database(db_file.read(), password=password,
-                  key_file_contents=key_file.read())
+                  key_file_contents=key_file_contents)
     return db
 
 
@@ -65,7 +71,7 @@ def do_get(args):
         clipboard.copy(entry.password)
 
 
-def main():
+def main(args=None):
     parser = argparse.ArgumentParser(prog='kp')
     parser.add_argument('-k', '--key-file', type=argparse.FileType('r'))
     parser.add_argument('-d', '--db-file', type=argparse.FileType('r'))
@@ -81,5 +87,5 @@ def main():
     get_parser.add_argument('entry_id', help='Either username of password')
     get_parser.set_defaults(run=do_get)
 
-    args = parser.parse_args()
+    args = parser.parse_args(args=args)
     args.run(args)
