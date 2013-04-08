@@ -77,6 +77,7 @@ class TestKeepassX(unittest.TestCase):
         kdb_contents = open_data_file('passwordkey.kdb').read()
         key_file_contents = open_data_file('passwordkey.key').read()
         db = Database(kdb_contents, 'password', key_file_contents)
+        self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
     def test_entries_can_be_grouped_by_groupid(self):
         db = Database(self.kdb_contents, 'password')
@@ -101,6 +102,14 @@ class TestKeepassX(unittest.TestCase):
         db = Database(self.kdb_contents, 'password')
         with self.assertRaises(EntryNotFoundError):
             entry = db.find_by_title('badtitle')
+
+    def test_32byte_key(self):
+        # keepassx has some special casing of key files if they're
+        # 32 or 64 bytes long.
+        kdb_contents = open_data_file('password32key.kdb').read()
+        key_file_contents = open_data_file('password32key.key').read()
+        db = Database(kdb_contents, 'password', key_file_contents)
+        self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
 
 if __name__ == '__main__':

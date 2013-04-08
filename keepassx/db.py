@@ -144,8 +144,14 @@ class Database(object):
             # it's hex encoded and decode and use the contents directly
             # instead of taking the sha256 hash.  These seem rather esoteric
             # so I'm skipping them for now.
-            file_key = hashlib.sha256(key_file_contents).digest()
-            key = hashlib.sha256(key + file_key).digest()
+            if len(key_file_contents) == 64:
+                # Then the key file contents is treated as hex and we
+                # use the converted-to-binary contents as the file
+                # key hash.
+                file_key_hash = binascii.unhexlify(key_file_contents)
+            else:
+                file_key_hash = hashlib.sha256(key_file_contents).digest()
+            key = hashlib.sha256(key + file_key_hash).digest()
         cipher = AES.new(seed2, AES.MODE_ECB)
         for i in xrange(num_rounds):
             key = cipher.encrypt(key)
