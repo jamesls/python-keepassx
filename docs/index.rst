@@ -7,10 +7,10 @@
 python-keepassx
 ===============
 
-python-keepassx is a command line interface and python bindings to keepassx.
-Keepassx is a cross platform password manager.  However, keepassx is a desktop
-GUI application.  By using python-keepassx, you can access your passwords
-both from the command line and from python code.
+KeePassX is a cross platform password manager.  However, KeePassX is a desktop
+GUI application.  That's where python-keepassx comes in.  By using python-keepassx,
+you can access your passwords using a command line interface to KeePassX.  You can
+also use the python library directly in your own python applications.
 
 
 What is this project and why should I care?
@@ -29,6 +29,9 @@ I've never heard of a password manager, what is it?
 
 I'd like to try out this project, what do I do?
 -----------------------------------------------
+
+Check out the :doc:`gettingstarted` for an introduction
+to using python-keepassx.
 
 
 I just want reference/API docs, where are they?
