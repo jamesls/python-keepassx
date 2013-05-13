@@ -13,11 +13,11 @@ setup(
     author_email='js@jamesls.com',
     packages=find_packages(),
     keywords="keepassx",
-    url="https://github.com/jamesls/keepassx",
+    url="https://github.com/jamesls/python-keepassx",
     scripts=['bin/kp'],
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
     ],
     install_requires=[
         'pycrypto==2.6',
