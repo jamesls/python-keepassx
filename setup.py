@@ -20,6 +20,8 @@ setup(
         'License :: OSI Approved :: BSD License',
     ],
     install_requires=[
+        'pycrypto==2.6',
+        'PyYAML==3.10',
     ]
 )
 

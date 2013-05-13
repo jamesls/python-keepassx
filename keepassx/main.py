@@ -2,30 +2,38 @@ import sys
 import os
 import argparse
 import getpass
+import ConfigParser
+
+import yaml
 
 from keepassx.db import Database, EntryNotFoundError
 from keepassx import clipboard
 from keepassx import __version__
 
 
+CONFIG_FILENAME = os.path.expanduser('~/.kpconfig')
+
+
 def open_db_file(args):
     if args.db_file is not None:
-        return args.db_file
+        db_file = args.db_file
     elif 'KP_DB_FILE' in os.environ:
-        return open(os.environ['KP_DB_FILE'])
+        db_file = os.environ['KP_DB_FILE']
     else:
         sys.stderr.write("Must supply a db filename.\n")
         sys.exit(1)
+    return open(os.path.expanduser(db_file))
 
 
 def open_key_file(args):
     if args.key_file is not None:
-        return args.key_file
+        key_file = args.key_file
     elif 'KP_KEY_FILE' in os.environ:
-        return open(os.environ['KP_DB_FILE'])
+        key_file = os.environ['KP_DB_FILE']
     else:
         # A keyfile is optional so None can just be returned.
         return None
+    return open(os.path.expanduser(key_file))
 
 
 def create_db(args):
@@ -71,10 +79,20 @@ def do_get(args):
         clipboard.copy(entry.password)
 
 
-def main(args=None):
+def merge_config_file_values(args):
+    if os.path.isfile(CONFIG_FILENAME):
+        with open(CONFIG_FILENAME, 'r') as f:
+            config_data = yaml.safe_load(f)
+        if args.db_file is None:
+            args.db_file = config_data.get('db_file')
+        if args.key_file is None:
+            args.key_file = config_data.get('key_file')
+
+
+def create_parser():
     parser = argparse.ArgumentParser(prog='kp')
-    parser.add_argument('-k', '--key-file', type=argparse.FileType('r'))
-    parser.add_argument('-d', '--db-file', type=argparse.FileType('r'))
+    parser.add_argument('-k', '--key-file')
+    parser.add_argument('-d', '--db-file')
     parser.add_argument('--version', action='version',
                         version='%(prog)s version ' + __version__)
     subparsers = parser.add_subparsers()
@@ -86,6 +104,11 @@ def main(args=None):
     get_parser.add_argument('entry_type', help='Either username of password')
     get_parser.add_argument('entry_id', help='Either username of password')
     get_parser.set_defaults(run=do_get)
+    return parser
 
+
+def main(args=None):
+    parser = create_parser()
     args = parser.parse_args(args=args)
+    merge_config_file_values(args)
     args.run(args)
