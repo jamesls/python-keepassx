@@ -361,9 +361,3 @@ class DateType(BaseType):
         minutes = ((uchar[3] &0x0000000F) << 2) | (uchar[4] >> 6)
         seconds = uchar[4] & 0x0000003F
         return datetime.datetime(year, month, day, hour, minutes, seconds)
-
-
-if __name__ == '__main__':
-    import sys
-    h = Header(open('password.kdb').read())
-    print h

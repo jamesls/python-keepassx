@@ -2,9 +2,9 @@ import sys
 import os
 import argparse
 import getpass
-import ConfigParser
 
 import yaml
+from prettytable import PrettyTable
 
 from keepassx.db import Database, EntryNotFoundError
 from keepassx import clipboard
@@ -58,9 +58,15 @@ def create_db(args):
 
 def do_list(args):
     db = create_db(args)
-    print "Entries:\n"
-    for entry in db.entries:
-        print entry.title, entry.uuid, entry.group.group_name
+    print("Entries:\n")
+    t = PrettyTable(['Title', 'Uuid', 'GroupName'])
+    t.align['Title'] = 'l'
+    t.align['GroupName'] = 'l'
+    for entry in sorted(db.entries, key=lambda x: x.title.lower()):
+        if entry.group.group_name == 'Backup':
+            continue
+        t.add_row([entry.title, entry.uuid, entry.group.group_name])
+    print(t)
 
 
 def do_get(args):
@@ -74,10 +80,10 @@ def do_get(args):
             sys.stderr.write(
                 "Could not find an entry for: %s\n" % args.entry_id)
     if args.entry_type == 'username':
-        print entry.username
+        print(entry.username)
     elif args.entry_type == 'password':
         clipboard.copy(entry.password)
-        sys.stdout.write("Password has been copied to clipboard.")
+        sys.stdout.write("Password has been copied to clipboard.\n")
 
 
 def merge_config_file_values(args):
