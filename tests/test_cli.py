@@ -6,10 +6,26 @@ command.
 
 """
 import os
+import time
 import unittest
-from subprocess import check_output
+from contextlib import contextmanager
+from subprocess import Popen, PIPE
 
 from keepassx.main import main
+from keepassx.main import CONFIG_FILENAME
+
+
+@contextmanager
+def without_config_file():
+    backup_file = None
+    if os.path.isfile(CONFIG_FILENAME):
+        backup_file = CONFIG_FILENAME + '.%s' % int(time.time())
+        os.rename(CONFIG_FILENAME, backup_file)
+    try:
+        yield
+    finally:
+        if backup_file is not None:
+            os.rename(backup_file, CONFIG_FILENAME)
 
 
 class TestCLI(unittest.TestCase):
@@ -29,20 +45,25 @@ class TestCLI(unittest.TestCase):
     def kp_run(self, command):
         env = os.environ.copy()
         env['KP_INSECURE_PASSWORD'] = 'password'
-        output = check_output(command, shell=True, env=env)
-        return output
+        with without_config_file():
+            p = Popen(command, shell=True, env=env, stdout=PIPE, stderr=PIPE)
+            stdout, stderr = p.communicate()
+            if p.returncode != 0:
+                raise AssertionError("Command %s failed with rc %s: %s" %
+                                    (command, p.returncode, stdout + stderr))
+        return stdout + stderr
 
     def test_open_with_password_and_keyfile(self):
         output = self.kp_run('kp -d ./passwordkey.kdb -k ./passwordkey.key list')
-        self.assertIn(
-            'Entries:\n\nmytitle c4d301502050cd695e353b16094be4a7 Internet\n',
-            output)
+        self.assertIn('c4d301502050cd695e353b16094be4a7', output)
+        self.assertIn('mytitle', output)
+        self.assertIn('Internet', output)
 
     def test_open_with_password(self):
         output = self.kp_run('kp -d ./password.kdb list')
-        self.assertIn(
-            'Entries:\n\nmytitle c4d301502050cd695e353b16094be4a7 Internet\n',
-            output)
+        self.assertIn('c4d301502050cd695e353b16094be4a7 ', output)
+        self.assertIn('mytitle ', output)
+        self.assertIn('Internet ', output)
 
 
 if __name__ == '__main__':
