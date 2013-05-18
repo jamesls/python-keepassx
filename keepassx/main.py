@@ -77,6 +77,7 @@ def do_get(args):
         print entry.username
     elif args.entry_type == 'password':
         clipboard.copy(entry.password)
+        sys.stdout.write("Password has been copied to clipboard.")
 
 
 def merge_config_file_values(args):
@@ -101,8 +102,8 @@ def create_parser():
     list_parser.set_defaults(run=do_list)
 
     get_parser = subparsers.add_parser('get', help='Get password for entry')
-    get_parser.add_argument('entry_type', help='Either username of password')
-    get_parser.add_argument('entry_id', help='Either username of password')
+    get_parser.add_argument('entry_type', help='Either username or password')
+    get_parser.add_argument('entry_id', help='Entry name or uuid.')
     get_parser.set_defaults(run=do_get)
     return parser
 
