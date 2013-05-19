@@ -15,6 +15,9 @@ from keepassx.main import main
 from keepassx.main import CONFIG_FILENAME
 
 
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 @contextmanager
 def without_config_file():
     backup_file = None
@@ -34,15 +37,17 @@ class TestCLI(unittest.TestCase):
     # password and keyfiles using relative paths.
     def setUp(self):
         self._original_dir = os.getcwd()
-        misc_dir = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            'misc')
+        misc_dir = os.path.join(PROJECT_DIR, 'misc')
         os.chdir(misc_dir)
 
     def tearDown(self):
         os.chdir(self._original_dir)
 
     def kp_run(self, command):
+        if command.startswith('kp '):
+            # Replace it with the full path to <root>/bin
+            command = command.replace(
+                'kp', os.path.join(PROJECT_DIR, 'bin', 'kp'))
         env = os.environ.copy()
         env['KP_INSECURE_PASSWORD'] = 'password'
         with without_config_file():
