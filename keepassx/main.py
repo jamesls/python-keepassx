@@ -79,9 +79,10 @@ def do_get(args):
         except EntryNotFoundError:
             sys.stderr.write(
                 "Could not find an entry for: %s\n" % args.entry_id)
-    if args.entry_type == 'username':
+            return
+    if 'username'.startswith(args.entry_type):
         print(entry.username)
-    elif args.entry_type == 'password':
+    elif 'password'.startswith(args.entry_type):
         clipboard.copy(entry.password)
         sys.stdout.write("Password has been copied to clipboard.\n")
 

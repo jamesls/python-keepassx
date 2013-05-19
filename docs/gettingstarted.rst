@@ -2,6 +2,7 @@
 Getting Started Guide
 =====================
 
+
 This tutorial will walk you through how to get up and running with
 python-keepassx.  For the rest of this document, we'll refer to KeePassX GUI as
 the original KeePassX desktop application, and ``keepassx`` as the python
