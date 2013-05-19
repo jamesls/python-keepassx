@@ -6,10 +6,11 @@ command.
 
 """
 import os
+import sys
 import time
 import unittest
 from contextlib import contextmanager
-from subprocess import Popen, PIPE
+from StringIO import StringIO
 
 from keepassx.main import main
 from keepassx.main import CONFIG_FILENAME
@@ -31,32 +32,41 @@ def without_config_file():
             os.rename(backup_file, CONFIG_FILENAME)
 
 
+@contextmanager
+def capture_stdout():
+    captured = StringIO()
+    sys.stdout = captured
+    try:
+        yield captured
+    finally:
+        sys.stdout = sys.__stdout__
+
+
 class TestCLI(unittest.TestCase):
     # All tests are from the ./misc directory,
     # so that you can conveniently specify
     # password and keyfiles using relative paths.
+
     def setUp(self):
         self._original_dir = os.getcwd()
         misc_dir = os.path.join(PROJECT_DIR, 'misc')
         os.chdir(misc_dir)
+        self._newenv = os.environ.copy()
+        self._env = os.environ
+        os.environ = self._newenv
 
     def tearDown(self):
         os.chdir(self._original_dir)
+        os.environ = self._env
 
     def kp_run(self, command):
+        self._newenv['KP_INSECURE_PASSWORD'] = 'password'
         if command.startswith('kp '):
-            # Replace it with the full path to <root>/bin
-            command = command.replace(
-                'kp', os.path.join(PROJECT_DIR, 'bin', 'kp'))
-        env = os.environ.copy()
-        env['KP_INSECURE_PASSWORD'] = 'password'
+            command = command[3:]
         with without_config_file():
-            p = Popen(command, shell=True, env=env, stdout=PIPE, stderr=PIPE)
-            stdout, stderr = p.communicate()
-            if p.returncode != 0:
-                raise AssertionError("Command %s failed with rc %s: %s" %
-                                    (command, p.returncode, stdout + stderr))
-        return stdout + stderr
+            with capture_stdout() as captured:
+                main(command.split())
+            return captured.getvalue()
 
     def test_open_with_password_and_keyfile(self):
         output = self.kp_run('kp -d ./passwordkey.kdb -k ./passwordkey.key list')
