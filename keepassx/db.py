@@ -2,6 +2,7 @@ import struct
 import hashlib
 import datetime
 import binascii
+import difflib
 from pprint import pformat
 
 from Crypto.Cipher import AES
@@ -273,6 +274,41 @@ class Database(object):
             if entry.title == title:
                 return entry
         raise EntryNotFoundError("Entry not found for title: %s" % title)
+
+    def fuzzy_search_by_title(self, title):
+        # Exact matches trump
+        found = []
+        for entry in self.entries:
+            if entry.title == title:
+                return [entry]
+        # Case insensitive matches next.
+        title_lower = title.lower()
+        for entry in self.entries:
+            if entry.title.lower() == title.lower():
+                return [entry]
+        # Subsequence/prefix matches next.
+        entries = []
+        for entry in self.entries:
+            if self._is_subsequence(title_lower, entry.title.lower()):
+                entries.append(entry)
+        if entries:
+            return entries
+        # Finally close matches that might have mispellings.
+        entry_map= {entry.title.lower(): entry for entry in self.entries}
+        matches = difflib.get_close_matches(
+            title.lower(), entry_map.keys(), cutoff=0.7)
+        if matches:
+            return [entry_map[name] for name in matches]
+        return []
+
+    def _is_subsequence(self, short_str, full_str):
+        current_index = 0
+        for i in range(len(full_str)):
+            if short_str[current_index] == full_str[i]:
+                current_index += 1
+            if current_index == len(short_str):
+                return True
+        return False
 
 
 class Group(object):

@@ -98,6 +98,26 @@ class TestKeepassX(unittest.TestCase):
         entry = db.find_by_title('mytitle')
         self.assertEqual(entry.title, 'mytitle')
 
+    def test_search_entry_by_title(self):
+        db = Database(self.kdb_contents, 'password')
+        entry = db.fuzzy_search_by_title('mytitle')[0]
+        self.assertEqual(entry.title, 'mytitle')
+
+        entry = db.fuzzy_search_by_title('myTITLE')[0]
+        self.assertEqual(entry.title, 'mytitle')
+
+        entry = db.fuzzy_search_by_title('mytle')[0]
+        self.assertEqual(entry.title, 'mytitle')
+
+        entry = db.fuzzy_search_by_title('badvalue')
+        self.assertEqual(entry, [])
+
+    def test_search_entry_with_typos(self):
+        db = Database(self.kdb_contents, 'password')
+        # 'le' has been transposed.
+        entry = db.fuzzy_search_by_title('mytitel')[0]
+        self.assertEqual(entry.title, 'mytitle')
+
     def test_find_entry_by_title_does_not_exist(self):
         db = Database(self.kdb_contents, 'password')
         with self.assertRaises(EntryNotFoundError):
