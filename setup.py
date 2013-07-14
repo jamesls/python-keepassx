@@ -8,7 +8,6 @@ setup(
     description="Python API and CLI for KeePassX",
     long_description=open(os.path.join(os.path.dirname(__file__),
                                        'README.rst')).read(),
-    license='BSD',
     author='James Saryerwinnie',
     author_email='js@jamesls.com',
     packages=find_packages(),
