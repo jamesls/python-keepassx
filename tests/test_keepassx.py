@@ -123,11 +123,19 @@ class TestKeepassX(unittest.TestCase):
         with self.assertRaises(EntryNotFoundError):
             entry = db.find_by_title('badtitle')
 
-    def test_32byte_key(self):
+    def test_64byte_key(self):
         # keepassx has some special casing of key files if they're
         # 32 or 64 bytes long.
         kdb_contents = open_data_file('password32key.kdb').read()
         key_file_contents = open_data_file('password32key.key').read()
+        db = Database(kdb_contents, 'password', key_file_contents)
+        self.assertEqual(db.entries[0].group.group_name, 'Internet')
+
+    def test_32byte_key(self):
+        # keepassx has some special casing of key files if they're
+        # 32 or 64 bytes long.
+        kdb_contents = open_data_file('password32byte.kdb').read()
+        key_file_contents = open_data_file('password32byte.key').read()
         db = Database(kdb_contents, 'password', key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 

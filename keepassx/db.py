@@ -150,6 +150,8 @@ class Database(object):
                 # use the converted-to-binary contents as the file
                 # key hash.
                 file_key_hash = binascii.unhexlify(key_file_contents)
+            elif len(key_file_contents) == 32:
+                file_key_hash = key_file_contents
             else:
                 file_key_hash = hashlib.sha256(key_file_contents).digest()
             key = hashlib.sha256(key + file_key_hash).digest()
