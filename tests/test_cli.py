@@ -80,6 +80,10 @@ class TestCLI(unittest.TestCase):
         self.assertIn('mytitle ', output)
         self.assertIn('Internet ', output)
 
+    def test_get_password_exact(self):
+        output = self.kp_run('kp -d ./password.kdb get --stdout p mytitle')
+        self.assertIn('mypassword', output)
+
 
 if __name__ == '__main__':
     unittest.main()

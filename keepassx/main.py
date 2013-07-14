@@ -83,8 +83,11 @@ def do_get(args):
     if 'username'.startswith(args.entry_type):
         print(entry.username)
     elif 'password'.startswith(args.entry_type):
-        clipboard.copy(entry.password)
-        sys.stdout.write("Password has been copied to clipboard.\n")
+        if not args.stdout:
+            clipboard.copy(entry.password)
+            sys.stdout.write("Password has been copied to clipboard.\n")
+        else:
+            print(entry.password)
 
 
 def merge_config_file_values(args):
@@ -113,6 +116,11 @@ def create_parser():
     get_parser = subparsers.add_parser('get', help='Get password for entry')
     get_parser.add_argument('entry_type', help='Either username or password')
     get_parser.add_argument('entry_id', help='Entry name or uuid.')
+    get_parser.add_argument('-s', '--stdout', help='Print password to stdout. '
+                            'Normally the password is copied to the clipboard.'
+                            'However, if you want the password printed to '
+                            'stdout, you can use this option.',
+                            action='store_true')
     get_parser.set_defaults(run=do_get)
     return parser
 
