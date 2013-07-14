@@ -126,8 +126,8 @@ class TestKeepassX(unittest.TestCase):
     def test_64byte_key(self):
         # keepassx has some special casing of key files if they're
         # 32 or 64 bytes long.
-        kdb_contents = open_data_file('password32key.kdb').read()
-        key_file_contents = open_data_file('password32key.key').read()
+        kdb_contents = open_data_file('password64byte.kdb').read()
+        key_file_contents = open_data_file('password64byte.key').read()
         db = Database(kdb_contents, 'password', key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
