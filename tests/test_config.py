@@ -25,7 +25,7 @@ class TestConfigMerging(unittest.TestCase):
         with open(self.temp.name, 'w') as f:
             f.write(yaml.safe_dump(values))
 
-    def test_config_values_are_merge_in(self):
+    def test_config_values_are_merged_in(self):
         tmp_filename = '/tmp/foobar'
         self.set_config_values({
             'db_file': tmp_filename,
@@ -38,3 +38,12 @@ class TestConfigMerging(unittest.TestCase):
         merge_config_file_values(args)
         self.assertEqual(args.db_file, tmp_filename)
         self.assertEqual(args.key_file, 'keyfile')
+
+    def test_config_file_not_a_dict(self):
+        tmp_filename = '/tmp/foobar'
+        self.set_config_values(None)
+        parser = create_parser()
+        args = parser.parse_args('-d foo list'.split())
+        merge_config_file_values(args)
+        self.assertIsNone(args.key_file)
+        self.assertEqual(args.db_file, 'foo')

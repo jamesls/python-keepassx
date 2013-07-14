@@ -91,6 +91,8 @@ def merge_config_file_values(args):
     if os.path.isfile(CONFIG_FILENAME):
         with open(CONFIG_FILENAME, 'r') as f:
             config_data = yaml.safe_load(f)
+            if not isinstance(config_data, dict):
+                return
         if args.db_file is None:
             args.db_file = config_data.get('db_file')
         if args.key_file is None:
