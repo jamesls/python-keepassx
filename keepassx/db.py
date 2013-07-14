@@ -139,12 +139,11 @@ class Database(object):
         # Based on Kdb3Database::setCompositeKey and Kdb3Database::loadReal.
         key = hashlib.sha256(password).digest()
         if key_file_contents is not None:
-            # TODO: The key derivation also supports a few extra
-            # modes, if the key file is 32 bytes, use that directly instead of
-            # taking the sha256 of the contents, if it's 64 bits, assume
-            # it's hex encoded and decode and use the contents directly
-            # instead of taking the sha256 hash.  These seem rather esoteric
-            # so I'm skipping them for now.
+            # The key derivation also supports a few extra modes, if the key
+            # file is 32 bytes, use that directly instead of taking the sha256
+            # of the contents, if it's 64 bits, assume it's hex encoded and
+            # decode and use the contents directly instead of taking the sha256
+            # hash.
             if len(key_file_contents) == 64:
                 # Then the key file contents is treated as hex and we
                 # use the converted-to-binary contents as the file
