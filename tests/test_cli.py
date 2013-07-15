@@ -42,6 +42,16 @@ def capture_stdout():
         sys.stdout = sys.__stdout__
 
 
+@contextmanager
+def capture_stderr():
+    captured = StringIO()
+    sys.stderr = captured
+    try:
+        yield captured
+    finally:
+        sys.stderr = sys.__stderr__
+
+
 class TestCLI(unittest.TestCase):
     # All tests are from the ./misc directory,
     # so that you can conveniently specify
@@ -83,6 +93,17 @@ class TestCLI(unittest.TestCase):
     def test_get_password_exact(self):
         output = self.kp_run('kp -d ./password.kdb get --stdout p mytitle')
         self.assertIn('mypassword', output)
+
+    def test_with_missing_command(self):
+        with self.assertRaises(SystemExit):
+            with capture_stderr() as captured:
+                self.kp_run('kp ')
+        stderr = captured.getvalue()
+        self.assertIn('invalid choice', stderr)
+        self.assertIn('choose from', stderr)
+        self.assertIn('list', stderr)
+        self.assertIn('get', stderr)
+        #self.fail(stderr)
 
 
 if __name__ == '__main__':
