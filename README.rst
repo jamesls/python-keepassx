@@ -31,7 +31,7 @@ You can also get a username/password::
   Password:
   myusername
 
-   $ kp -d password.kdb get p mytitle
+   $ kp -d password.kdb get password mytitle
    Password:
    Password has been copied to clipboard.
 
