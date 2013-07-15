@@ -14,14 +14,16 @@ setup(
     keywords="keepassx",
     url="https://github.com/jamesls/python-keepassx",
     scripts=['bin/kp'],
-    classifiers=[
-        'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
-    ],
     install_requires=[
         'pycrypto==2.6',
         'PyYAML==3.10',
         'prettytable==0.7.2',
         'six==1.3.0',
-    ]
+    ],
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+    ],
 )
