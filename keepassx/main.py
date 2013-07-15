@@ -22,7 +22,7 @@ def open_db_file(args):
     else:
         sys.stderr.write("Must supply a db filename.\n")
         sys.exit(1)
-    return open(os.path.expanduser(db_file))
+    return open(os.path.expanduser(db_file), 'rb')
 
 
 def open_key_file(args):
@@ -33,7 +33,7 @@ def open_key_file(args):
     else:
         # A keyfile is optional so None can just be returned.
         return None
-    return open(os.path.expanduser(key_file))
+    return open(os.path.expanduser(key_file), 'rb')
 
 
 def create_db(args):

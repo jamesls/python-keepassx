@@ -22,7 +22,6 @@ setup(
         'pycrypto==2.6',
         'PyYAML==3.10',
         'prettytable==0.7.2',
+        'six==1.3.0',
     ]
 )
-
-

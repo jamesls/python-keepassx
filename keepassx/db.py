@@ -6,6 +6,8 @@ import difflib
 from pprint import pformat
 
 from Crypto.Cipher import AES
+from six.moves import xrange
+from six import integer_types
 
 SYSTEM_USER_UUID = '00000000000000000000000000000000'
 
@@ -112,7 +114,7 @@ class Database(object):
         self.metadata = Header(contents[:Header.HEADER_SIZE])
         payload = self._decrypt_payload(
             contents[Header.HEADER_SIZE:],
-            self._calculate_key(password, key_file_contents,
+            self._calculate_key(password.encode('utf-8'), key_file_contents,
                                 self.metadata.master_seed,
                                 self.metadata.master_seed2,
                                 self.metadata.key_encryption_rounds),
@@ -127,7 +129,10 @@ class Database(object):
                              encryption_type)
         decryptor = AES.new(key, AES.MODE_CBC, iv)
         payload = decryptor.decrypt(payload)
-        extra = ord(payload[-1])
+        extra = payload[-1]
+        if not isinstance(payload[-1], integer_types):
+            # Python 2.
+            extra = ord(extra)
         payload = payload[:len(payload)-extra]
         if self.metadata.contents_hash != hashlib.sha256(payload).digest():
             raise ValueError("Decryption failed, decrypted checksum "
@@ -362,14 +367,14 @@ class BaseType(object):
 class UUIDType(object):
     @staticmethod
     def decode(payload):
-        return binascii.b2a_hex(payload).replace('\0', '')
+        return binascii.b2a_hex(payload).decode('utf-8').replace('\0', '')
 
 
 class StringType(BaseType):
     @staticmethod
     def decode(payload):
         # Strings are null terminated.
-        return payload.replace('\0', '')
+        return payload.decode('utf-8').replace('\0', '')
 
 
 class IntegerType(BaseType):

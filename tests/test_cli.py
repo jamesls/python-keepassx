@@ -10,7 +10,7 @@ import sys
 import time
 import unittest
 from contextlib import contextmanager
-from StringIO import StringIO
+from six import StringIO
 
 from keepassx.main import main
 from keepassx.main import CONFIG_FILENAME
