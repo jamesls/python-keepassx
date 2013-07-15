@@ -1,6 +1,5 @@
 import unittest
 import tempfile
-import ConfigParser
 import yaml
 
 import mock

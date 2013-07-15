@@ -22,7 +22,7 @@ def open_db_file(args):
     else:
         sys.stderr.write("Must supply a db filename.\n")
         sys.exit(1)
-    return open(os.path.expanduser(db_file))
+    return open(os.path.expanduser(db_file), 'rb')
 
 
 def open_key_file(args):
@@ -33,7 +33,7 @@ def open_key_file(args):
     else:
         # A keyfile is optional so None can just be returned.
         return None
-    return open(os.path.expanduser(key_file))
+    return open(os.path.expanduser(key_file), 'rb')
 
 
 def create_db(args):
@@ -125,8 +125,23 @@ def create_parser():
     return parser
 
 
+def _parse_args(parser, args):
+    parsed_args = parser.parse_args(args=args)
+    if not hasattr(parsed_args, 'run') and args is None:
+        # This is for python3.3 support which is different
+        # from 2.x.
+        # See http://bugs.python.org/issue16308
+        # Rather than try to get clever, we just simulate what's suppose to
+        # happen which is to print the usage, write a message to stderr and
+        # exit.
+        parser.print_usage()
+        sys.stderr.write('kp: error: too few arguments\n')
+        raise SystemExit(2)
+    return parsed_args
+
+
 def main(args=None):
     parser = create_parser()
-    args = parser.parse_args(args=args)
+    args = _parse_args(parser, args)
     merge_config_file_values(args)
     args.run(args)

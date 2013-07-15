@@ -10,7 +10,7 @@ import sys
 import time
 import unittest
 from contextlib import contextmanager
-from StringIO import StringIO
+from six import StringIO
 
 from keepassx.main import main
 from keepassx.main import CONFIG_FILENAME
@@ -40,6 +40,16 @@ def capture_stdout():
         yield captured
     finally:
         sys.stdout = sys.__stdout__
+
+
+@contextmanager
+def capture_stderr():
+    captured = StringIO()
+    sys.stderr = captured
+    try:
+        yield captured
+    finally:
+        sys.stderr = sys.__stderr__
 
 
 class TestCLI(unittest.TestCase):
@@ -83,6 +93,17 @@ class TestCLI(unittest.TestCase):
     def test_get_password_exact(self):
         output = self.kp_run('kp -d ./password.kdb get --stdout p mytitle')
         self.assertIn('mypassword', output)
+
+    def test_with_missing_command(self):
+        with self.assertRaises(SystemExit):
+            with capture_stderr() as captured:
+                self.kp_run('kp ')
+        stderr = captured.getvalue()
+        self.assertIn('invalid choice', stderr)
+        self.assertIn('choose from', stderr)
+        self.assertIn('list', stderr)
+        self.assertIn('get', stderr)
+        #self.fail(stderr)
 
 
 if __name__ == '__main__':
