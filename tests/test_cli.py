@@ -99,11 +99,7 @@ class TestCLI(unittest.TestCase):
             with capture_stderr() as captured:
                 self.kp_run('kp ')
         stderr = captured.getvalue()
-        self.assertIn('invalid choice', stderr)
-        self.assertIn('choose from', stderr)
-        self.assertIn('list', stderr)
-        self.assertIn('get', stderr)
-        #self.fail(stderr)
+        self.assertIn('kp: error: too few arguments', stderr)
 
 
 if __name__ == '__main__':

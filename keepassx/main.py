@@ -127,7 +127,7 @@ def create_parser():
 
 def _parse_args(parser, args):
     parsed_args = parser.parse_args(args=args)
-    if not hasattr(parsed_args, 'run') and args is None:
+    if not hasattr(parsed_args, 'run') and not args:
         # This is for python3.3 support which is different
         # from 2.x.
         # See http://bugs.python.org/issue16308
