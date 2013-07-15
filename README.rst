@@ -1,6 +1,12 @@
 Python KeepassX
 ===============
 
+.. image:: https://secure.travis-ci.org/jamesls/python-keepassx.png?branch=master
+   :target: http://travis-ci.org/jamesls/python-keepassx
+
+.. image:: https://coveralls.io/repos/jamesls/python-keepassx/badge.png?branch=master
+   :target: https://coveralls.io/r/jamesls/python-keepassx?branch=master
+
 Python keepassx is a python library and a command line utility for working with
 keepassx database files (``.kdb`` files).  This allow you to programatically
 access your usernames/passwords instead of having to use the KeePassX GUI.
