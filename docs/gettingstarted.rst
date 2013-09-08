@@ -31,124 +31,146 @@ You are now ready to start using ``keepassx``.
 First Steps
 ===========
 
-To get started, we're going to use a test database so can experiement with
-``kp`` features.  Later parts of this tutorial will show you how to use
-your existing password database (if you are an existing KeePassX desktop
-application user).
+To get started, we're going to use a test database so can expirement with
+``kp`` features.
 
-First we need to create a new database where we can store our passwords.
-To do this, we need to specify a file location and our master password.
+First we need to download the demo database.  You can download the demo
+databases `here <https://github.com/jamesls/python-keepassx/raw/master/misc/demo.kdb>`_::
 
-    $ kp create ~/.passwords
-    Enter master password:
-    Confirm password:
-    Password database created at ~/.passwords
+    $ wget https://github.com/jamesls/python-keepassx/raw/master/misc/demo.kdb
 
-Once we have a password database created we can now add passwords to our
-database::
+The first thing we can do is list the contents of the kdb file.
+The password for the demo kdb file is "password".
 
-    $ kp new --title "Gmail" --username "example@gmail.com"
-    Enter password:
-    Confirm password:
-    New entry successfully created.
+::
 
-Now our password is securely stored in our password database.  To
-retrieve our password for our new entry, we can use the ``kp get``
-command with our master password::
+    $ kp -d demo.kdb list
+    Password:
+    Entries:
 
-    $ kp get Gmail
-    Enter master password:
-    Password copied to clipboard.
-
-Our password for our entry has now been copied to our clipboard.
-If we paste the contents of the clipboard, we'll see our password.
+    +---------+----------------------------------+-----------+
+    | Title   |               Uuid               | GroupName |
+    +---------+----------------------------------+-----------+
+    | Github  | 477ee351ada4883c7b018a0535ab1a5d | Internet  |
+    | Gmail   | 297ee351218556022ef663376783dabd | eMail     |
+    | mytitle | c4d301502050cd695e353b16094be4a7 | Internet  |
+    +---------+----------------------------------+-----------+
 
 
-Next Steps
-==========
-
-In the previous section, we saw how to create a database, create a
-new entry, and then retrieve our entry.  KeepassX supports more advanced
-features, which we'll explore in this section.
-
-Groups
-------
-
-A password entry is associated with a single group.  This allows you
-to group your passwords.  In our example above, we did not specify
-a group name so it used the default group of "General".  Instead
-let's create two new entries.  Let's say we want to store our work
-email password and our personal email password::
-
-    $ kp new --group "Work" --title "Gmail" --username "example2@gmail.com"
-    Enter password:
-    Confirm password:
-    New entry successfully created.
-
-    $ kp new --group "Personal" --title "Gmail" --username "example3@gmail.com"
-    Enter password:
-    Confirm password:
-    New entry successfully created.
+From the output above, we can see that there are three entries available, with
+the titles "Github", "Gmail", and "mytitle".  We can get the username and
+password of an account in a number of ways.  First, we can refer to the Title
+of the entry::
 
 
-To retrieve our password, we can say::
+    $ kp -d demo.kdb get Github
+    Password:
 
 
-    $ kp get Work Gmail
-    Enter master password:
-    Password copied to clipboard.
-
-    $ kp get Personal Gmail
-    Enter master password:
-    Password copied to clipboard.
+    title:     Github
+    username:  githubuser
+    url:       github.com/githubuser
+    notes:
 
 
-Creating Entries in an Editor
------------------------------
-
-You can also create an entry in an editor.  This is useful
-if you don't want to remember all the parameters used to create
-an entry.  KeepassX also has other fields in an entry you can
-specify (URL, Comment, Expires).  To use this use the ``--interactive``
-option when creating an entry::
-
-    $ kp new --interactive
-
-Your editor will open with a template for you to fill in::
-
-    # Please fill in the fields below.
-    Group: General
-    Title:
-    Username:
-    URL:
-    Comment:
-    Expires: Never
-
-Fill in the fields with the appropriate values::
-
-    # Please fill in the fields below.
-    Group: Work
-    Title: Gmail2
-    Username: example5@gmail.com
-    URL: https://gmail.com
-    Comment: Second email address for work.
-    Expires: Never
-
-When you're done, save and exit your editor.
-You will then be prompted for a password::
-
-    $ kp new --interactive
-    Enter password:
-    Confirm password:
-    New entry successfully created.
+    Password has been copied to clipboard.
 
 
-Generating Passwords
---------------------
+We can see that the username is "githubuser" and that our password has been
+copied to the clipboard.  We can confirm this by pasting the contents.  On a
+mac we can run::
 
-One of the benefits for using a password manager is that
-you can use random (and long) passwords that you don't
-have to remember.  You can allow KeepassX to generate a
-secure password for you.  You can control the parameters
-of the password (length, characters to use, etc.) to ensure
-an application might place on a password.
+    $ echo $(pbpaste)
+    mypassword
+
+
+Efficient Retrieval
+-------------------
+
+We can improve how we retrive passwords.  First, we can set an env var so we
+don't have to repeatedly type '-d demo.kdb'
+
+::
+
+    $ export KP_DB_FILE=./demo.kdb
+    $ kp list
+     Password:
+     Entries:
+
+     +---------+----------------------------------+-----------+
+     | Title   |               Uuid               | GroupName |
+     +---------+----------------------------------+-----------+
+     | Github  | 477ee351ada4883c7b018a0535ab1a5d | Internet  |
+     | Gmail   | 297ee351218556022ef663376783dabd | eMail     |
+     | mytitle | c4d301502050cd695e353b16094be4a7 | Internet  |
+     +---------+----------------------------------+-----------+
+
+
+Secondly, we have a few options when specifying the entry we're looking for.
+In the example above we used the exact Title of the entry to retrive the entry
+details.  However, we can also do the following::
+
+    # Get by uuid
+    $ kp get 477ee351ada4883c7b018a0535ab1a5d
+
+    # Case insensitive matching.
+    $ kp get github
+
+    # Prefix matching
+    $ kp get git
+
+    # Fuzzy matching
+    $ kp get githbu
+
+
+In the case of fuzzy matching, it's possible that multiple results can be
+matched.  When this happens, the most relevant entry will be displayed.
+
+
+Controlling Output
+------------------
+
+You can also control which fields are displayed by specifying the fields you
+want after a get command.  For example::
+
+
+    $ kp get github title username
+    Password:
+
+
+    title:     Github
+    username:  githubuser
+
+
+    Password has been copied to clipboard.
+
+In the example above, we are only showing the title and username. The available fields are:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Name
+     - Description
+   * - uuid
+     - A unique identifier associated with the entry.
+   * - group
+     - The group associated with this entry (one Group can have many entries).
+   * - imageid
+     - The id of the image associated with theis entry.
+   * - title
+     - The title of the entry.
+   * - url
+     - A url for the entry.  This can be the login URL for a website.
+   * - username
+     - The username of the entry.
+   * - notes
+     - Any misc. notes associated with the entry.
+   * - creation_time
+     - The time the entry was created.
+   * - last_mod_time
+     - The time the entry was last modified.
+   * - last_acc_time
+     - The time the entry was last accessed.
+   * - expiration_time
+     - The time the entry expires.
+
