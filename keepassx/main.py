@@ -77,17 +77,33 @@ def do_get(args):
         try:
             entry = db.find_by_title(args.entry_id)
         except EntryNotFoundError:
-            sys.stderr.write(
-                "Could not find an entry for: %s\n" % args.entry_id)
-            return
-    if 'username'.startswith(args.entry_type):
-        print(entry.username)
-    elif 'password'.startswith(args.entry_type):
-        if not args.stdout:
-            clipboard.copy(entry.password)
-            sys.stdout.write("Password has been copied to clipboard.\n")
-        else:
-            print(entry.password)
+            # Last try, do a fuzzy match and see if we come up
+            # with anything.
+            matches = db.fuzzy_search_by_title(args.entry_id)
+            if not matches:
+                sys.stderr.write(
+                    "Could not find an entry for: %s\n" % args.entry_id)
+                return
+            else:
+                # There could be multiple fuzzy matches so we pick
+                # the first one.  The fuzzy_search_by_title returns
+                # the matches by closeness so the first element is
+                # the closest match.
+                entry = matches[0]
+    default_fields = ['title', 'username', 'url', 'notes']
+    if args.entry_fields:
+        fields = args.entry_fields
+    else:
+        fields = default_fields
+    print("\n")
+    for field in fields:
+        print("%-10s %s" % (field + ':', getattr(entry, field)))
+    print("\n")
+    if not args.stdout:
+        clipboard.copy(entry.password)
+        sys.stdout.write("Password has been copied to clipboard.\n")
+    else:
+        print(entry.password)
 
 
 def merge_config_file_values(args):
@@ -114,8 +130,9 @@ def create_parser():
     list_parser.set_defaults(run=do_list)
 
     get_parser = subparsers.add_parser('get', help='Get password for entry')
-    get_parser.add_argument('entry_type', help='Either username or password')
     get_parser.add_argument('entry_id', help='Entry name or uuid.')
+    get_parser.add_argument('entry_fields', nargs='*',
+                            help='Either username or password')
     get_parser.add_argument('-s', '--stdout', help='Print password to stdout. '
                             'Normally the password is copied to the clipboard.'
                             'However, if you want the password printed to '
