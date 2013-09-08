@@ -174,3 +174,16 @@ In the example above, we are only showing the title and username. The available 
    * - expiration_time
      - The time the entry expires.
 
+
+Next steps
+==========
+
+This tutorial covered using an existing kdb file to list and get passwords.
+The next steps would be to create your own kdb files.  Currently,
+``python-keepassx`` does not support creating kdb files (though this is a
+planned feature).  For now you will have to `download keepassx
+<http://www.keepassx.org/downloads>`_ and create your own kdb files.
+
+Another powerful feature of keepassx worth investivating is using keyfiles.
+``python-keepassx`` supports keyfiles via the `-k` argument or the
+``KP_KEY_FILE`` environment variable.
