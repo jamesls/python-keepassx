@@ -2,10 +2,11 @@
 python-keepassx
 ===============
 
-KeePassX is a cross platform password manager.  However, KeePassX is a desktop
-GUI application.  That's where python-keepassx comes in.  By using python-keepassx,
-you can access your passwords using a command line interface to KeePassX.  You can
-also use the python library directly in your own python applications.
+`KeePassX`_ is a cross platform password manager.  However, KeePassX is a desktop
+GUI application.  That's where ``python-keepassx`` comes in.  By using
+``python-keepassx``, you can access your passwords using a command line
+interface to KeePassX.  You can also use the python library directly in your
+own python applications.
 
 
 What is this project and why should I care?
@@ -97,3 +98,4 @@ Indices and tables
 
 
 .. _password best practices: https://www.schneier.com/blog/archives/2009/08/password_advice.html
+.. _KeePassX: http://www.keepassx.org/
