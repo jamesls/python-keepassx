@@ -84,6 +84,13 @@ class TestCLI(unittest.TestCase):
         self.assertIn('mytitle', output)
         self.assertIn('Internet', output)
 
+    def test_open_file_file_from_env_var(self):
+        os.environ['KP_KEY_FILE'] = './passwordkey.key'
+        output = self.kp_run('kp -d ./passwordkey.kdb list')
+        self.assertIn('c4d301502050cd695e353b16094be4a7', output)
+        self.assertIn('mytitle', output)
+        self.assertIn('Internet', output)
+
     def test_open_with_password(self):
         output = self.kp_run('kp -d ./password.kdb list')
         self.assertIn('c4d301502050cd695e353b16094be4a7 ', output)

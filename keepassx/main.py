@@ -29,7 +29,7 @@ def open_key_file(args):
     if args.key_file is not None:
         key_file = args.key_file
     elif 'KP_KEY_FILE' in os.environ:
-        key_file = os.environ['KP_DB_FILE']
+        key_file = os.environ['KP_KEY_FILE']
     else:
         # A keyfile is optional so None can just be returned.
         return None
