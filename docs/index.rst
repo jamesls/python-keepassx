@@ -80,12 +80,20 @@ to using python-keepassx.
 I just want reference/API docs, where are they?
 -----------------------------------------------
 
+Check out the reference docs here: :doc:`reference`.
+
+
+
+=================
+Table of Contents
+=================
 
 
 .. toctree::
    :maxdepth: 2
 
    gettingstarted
+   reference
 
 
 
