@@ -17,7 +17,6 @@ your entries::
 
     $ kp -d password.kdb list
     Password:
-    Entries:
 
     +---------+----------------------------------+-----------+
     | Title   |               Uuid               | GroupName |
@@ -27,15 +26,22 @@ your entries::
 
 You can also get a username/password::
 
-  $ kp -d password.kdb get username mytitle
-  Password:
-  myusername
+    $ kp -d demo.kdb get Github
+    Password:
 
-   $ kp -d password.kdb get password mytitle
-   Password:
-   Password has been copied to clipboard.
 
-You can use either the ``Title`` or the ``Uuid`` to refer to an entry when
-getting a username/password.
+    title:     Github
+    username:  githubuser
+    url:       github.com/githubuser
+    notes:
+
+
+    Password has been copied to clipboard.
+
+Check out the `docs`_ and the `getting started guide`_ for more info.
 
 Python KeepassX is an early project and is undergoing constant development.
+
+
+.. _docs: http://keepassx.readthedocs.org/
+.. _getting started guide: http://keepassx.readthedocs.org/en/latest/gettingstarted.html
