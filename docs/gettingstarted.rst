@@ -23,7 +23,7 @@ to install ``keepassx``.  In this tutorial we'll use pip::
 Should should now have a ``kp`` executable available on the command line::
 
     $ kp --version
-    kp version 0.0.1
+    kp version 0.0.2
 
 You are now ready to start using ``keepassx``.
 
