@@ -95,15 +95,12 @@ def do_get(args):
         fields = args.entry_fields
     else:
         fields = default_fields
-    print("\n")
+    sys.stderr.write('\n')
     for field in fields:
-        print("%-10s %s" % (field + ':', getattr(entry, field)))
-    print("\n")
-    if not args.stdout:
+        print("%s\t%s" % (field + ':', getattr(entry, field)))
+    if 'password' not in fields:
         clipboard.copy(entry.password)
-        sys.stdout.write("Password has been copied to clipboard.\n")
-    else:
-        print(entry.password)
+        sys.stderr.write("\nPassword has been copied to clipboard.\n")
 
 
 def merge_config_file_values(args):
@@ -133,11 +130,9 @@ def create_parser():
     get_parser.add_argument('entry_id', help='Entry name or uuid.')
     get_parser.add_argument('entry_fields', nargs='*',
                             help='Either username or password')
-    get_parser.add_argument('-s', '--stdout', help='Print password to stdout. '
-                            'Normally the password is copied to the clipboard.'
-                            'However, if you want the password printed to '
-                            'stdout, you can use this option.',
-                            action='store_true')
+    get_parser.add_argument('-n', '--no-clipboard-copy', action="store_true",
+                            dest="clipboard_copy", default=True,
+                            help="Don't copy the password to the clipboard")
     get_parser.set_defaults(run=do_get)
     return parser
 
