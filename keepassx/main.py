@@ -97,8 +97,8 @@ def do_get(args):
         fields = default_fields
     sys.stderr.write('\n')
     for field in fields:
-        print("%s\t%s" % (field + ':', getattr(entry, field)))
-    if 'password' not in fields:
+        print("%-10s %s" % (field + ':', getattr(entry, field)))
+    if args.clipboard_copy:
         clipboard.copy(entry.password)
         sys.stderr.write("\nPassword has been copied to clipboard.\n")
 
@@ -130,7 +130,7 @@ def create_parser():
     get_parser.add_argument('entry_id', help='Entry name or uuid.')
     get_parser.add_argument('entry_fields', nargs='*',
                             help='Either username or password')
-    get_parser.add_argument('-n', '--no-clipboard-copy', action="store_true",
+    get_parser.add_argument('-n', '--no-clipboard-copy', action="store_false",
                             dest="clipboard_copy", default=True,
                             help="Don't copy the password to the clipboard")
     get_parser.set_defaults(run=do_get)
