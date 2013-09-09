@@ -175,6 +175,23 @@ In the example above, we are only showing the title and username. The available 
      - The time the entry expires.
 
 
+Scripting
+---------
+
+``python-keepassx`` is a CLI and is written such that it is possible to use
+in a scripting environment.  Here's a few tips for working with ``kp`` in
+scripts.
+
+First, you can prevent copying to the clipboard by using the
+``-n/--no-clipboard-copy`` option.  For example, if you wanted to get the
+username for your github account you could run::
+
+
+    $ username=$(kp get -n github username | awk '{print $2}')
+    Password:
+    $ echo "Your username is $username"
+
+
 Next steps
 ==========
 
