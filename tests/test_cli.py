@@ -91,7 +91,7 @@ class TestCLI(unittest.TestCase):
         self.assertIn('Internet ', output)
 
     def test_get_password_exact(self):
-        output = self.kp_run('kp -d ./password.kdb get mytitle password')
+        output = self.kp_run('kp -d ./password.kdb get -n mytitle password')
         self.assertIn('mypassword', output)
 
     def test_with_missing_command(self):
