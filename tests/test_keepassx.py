@@ -139,6 +139,12 @@ class TestKeepassX(unittest.TestCase):
         db = Database(kdb_contents, 'password', key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
+    def test_64byte_key_no_password(self):
+        kdb_contents = open_data_file('passwordlesskey.kdb').read()
+        key_file_contents = open_data_file('passwordlesskey.key').read()
+        db = Database(kdb_contents, '', key_file_contents)
+        self.assertEqual(db.entries[0].group.group_name, 'Internet')
+
 
 if __name__ == '__main__':
     unittest.main()

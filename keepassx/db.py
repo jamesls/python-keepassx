@@ -159,7 +159,11 @@ class Database(object):
                 file_key_hash = key_file_contents
             else:
                 file_key_hash = hashlib.sha256(key_file_contents).digest()
-            key = hashlib.sha256(key + file_key_hash).digest()
+            if password == "":
+                key = file_key_hash
+            else:
+                key = hashlib.sha256(key + file_key_hash).digest()
+
         cipher = AES.new(seed2, AES.MODE_ECB)
         for i in xrange(num_rounds):
             key = cipher.encrypt(key)
