@@ -96,6 +96,17 @@ Table of Contents
    topics
    reference
 
+=========
+Changelog
+=========
+
+0.0.3
+-----
+
+* [bugfix] Support key file only kdb files (`pull request <https://github.com/jamesls/python-keepassx/pull/2>`_)
+* [docs] Add section on key files.
+* [docs] Add section on config files.
+
 
 ==================
 Indices and tables
