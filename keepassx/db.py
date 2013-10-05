@@ -159,7 +159,7 @@ class Database(object):
                 file_key_hash = key_file_contents
             else:
                 file_key_hash = hashlib.sha256(key_file_contents).digest()
-            if password == "":
+            if password == b"":
                 key = file_key_hash
             else:
                 key = hashlib.sha256(key + file_key_hash).digest()
