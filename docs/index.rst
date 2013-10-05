@@ -106,6 +106,7 @@ Changelog
 * [bugfix] Support key file only kdb files (`pull request <https://github.com/jamesls/python-keepassx/pull/2>`_)
 * [docs] Add section on key files.
 * [docs] Add section on config files.
+* [docs] Switch to guzzle sphinx theme.
 
 
 ==================
