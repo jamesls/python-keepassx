@@ -8,6 +8,21 @@ GUI application.  That's where ``python-keepassx`` comes in.  By using
 interface to KeePassX.  You can also use the python library directly in your
 own python applications.
 
+Python-keepassx: **simple**, command line interface to your passwords.
+
+::
+
+    $ kp get github
+    Password:
+
+    title:     GitHub
+    username:  jamesls
+    url:       https://github.com/jamesls/
+    notes:
+
+    Password has been copied to clipboard.
+
+See the :doc:`gettingstarted` to start using ``python-keepassx`` now.
 
 What is this project and why should I care?
 -------------------------------------------
