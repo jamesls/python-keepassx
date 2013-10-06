@@ -7,7 +7,7 @@ install:
   - pip install coveralls --use-mirrors
   - python setup.py develop
 script:
-  - py.test --pep8 --flakes --cov keepassx --cov-report term-missing
+  - py.test --pep8 --cov keepassx --cov-report term-missing
 notifications:
   email:
     - js@jamesls.com
