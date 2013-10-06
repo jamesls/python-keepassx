@@ -143,6 +143,28 @@ class TestKeepassX(unittest.TestCase):
         db = Database(kdb_contents, '', key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
+    def test_multi_entry_exact_search(self):
+        # This particular kdb file has multiple entries with the title
+        # "mytitle".
+        kdb_contents = open_data_file('passwordmultientry.kdb').read()
+        db = Database(kdb_contents, 'password')
+        self.assertEqual(len(db.entries), 3)
+        matches = db.fuzzy_search_by_title('mytitle')
+        self.assertEqual(len(matches), 3)
+        self.assertEqual(matches[0].title, 'mytitle')
+        self.assertEqual(matches[1].title, 'mytitle')
+        self.assertEqual(matches[2].title, 'mytitle')
+
+    def test_multi_entry_case_insensitive_search(self):
+        kdb_contents = open_data_file('passwordmultientry.kdb').read()
+        db = Database(kdb_contents, 'password')
+        self.assertEqual(len(db.entries), 3)
+        matches = db.fuzzy_search_by_title('mYtItlE')
+        self.assertEqual(len(matches), 3)
+        self.assertEqual(matches[0].title, 'mytitle')
+        self.assertEqual(matches[1].title, 'mytitle')
+        self.assertEqual(matches[2].title, 'mytitle')
+
 
 if __name__ == '__main__':
     unittest.main()

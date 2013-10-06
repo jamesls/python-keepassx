@@ -308,17 +308,21 @@ class Database(object):
         found).
 
         """
+        entries = []
         # Exact matches trump
         for entry in self.entries:
             if entry.title == title:
-                return [entry]
+                entries.append(entry)
+        if entries:
+            return entries
         # Case insensitive matches next.
         title_lower = title.lower()
         for entry in self.entries:
             if entry.title.lower() == title.lower():
-                return [entry]
+                entries.append(entry)
+        if entries:
+            return entries
         # Subsequence/prefix matches next.
-        entries = []
         for entry in self.entries:
             if self._is_subsequence(title_lower, entry.title.lower()):
                 entries.append(entry)
