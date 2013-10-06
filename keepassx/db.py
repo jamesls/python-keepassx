@@ -295,7 +295,7 @@ class Database(object):
                 return entry
         raise EntryNotFoundError("Entry not found for title: %s" % title)
 
-    def fuzzy_search_by_title(self, title):
+    def fuzzy_search_by_title(self, title, ignore_groups=None):
         """Find an entry by by fuzzy match.
 
         This will check things such as:
@@ -303,6 +303,10 @@ class Database(object):
             * case insensitive matching
             * typo checks
             * prefix matches
+
+        If the ``ignore_groups`` argument is provided, then any matching
+        entries in the ``ignore_groups`` list will not be returned.  This
+        argument can be used to filter out groups you are not interested in.
 
         Returns a list of matches (an empty list is returned if no matches are
         found).
@@ -314,27 +318,34 @@ class Database(object):
             if entry.title == title:
                 entries.append(entry)
         if entries:
-            return entries
+            return self._filter_entries(entries, ignore_groups)
         # Case insensitive matches next.
         title_lower = title.lower()
         for entry in self.entries:
             if entry.title.lower() == title.lower():
                 entries.append(entry)
         if entries:
-            return entries
+            return self._filter_entries(entries, ignore_groups)
         # Subsequence/prefix matches next.
         for entry in self.entries:
             if self._is_subsequence(title_lower, entry.title.lower()):
                 entries.append(entry)
         if entries:
-            return entries
+            return self._filter_entries(entries, ignore_groups)
         # Finally close matches that might have mispellings.
         entry_map = {entry.title.lower(): entry for entry in self.entries}
         matches = difflib.get_close_matches(
             title.lower(), entry_map.keys(), cutoff=0.7)
         if matches:
-            return [entry_map[name] for name in matches]
+            return self._filter_entries(
+                [entry_map[name] for name in matches], ignore_groups)
         return []
+
+    def _filter_entries(self, entries, ignore_groups):
+        if ignore_groups is None:
+            return entries
+        return [entry for entry in entries if entry.group.group_name
+                not in ignore_groups]
 
     def _is_subsequence(self, short_str, full_str):
         current_index = 0

@@ -165,6 +165,24 @@ class TestKeepassX(unittest.TestCase):
         self.assertEqual(matches[1].title, 'mytitle')
         self.assertEqual(matches[2].title, 'mytitle')
 
+    def test_fuzzy_search_ignore_groups(self):
+        kdb_contents = open_data_file('passwordmultientry.kdb').read()
+        db = Database(kdb_contents, 'password')
+        # There are 3 entries in the db with 'mytitle' titles.
+        # 1 of the entries is in the Backup group.  If we
+        # specify ignore_groups in our search, we should not
+        # get the entry in the Backup group.
+        matches = db.fuzzy_search_by_title('mytitle',
+                                           ignore_groups=['Backup'])
+        self.assertEqual(len(matches), 2)
+        self.assertEqual(matches[0].title, 'mytitle')
+        self.assertEqual(matches[1].title, 'mytitle')
+
+        self.assertNotEqual(matches[0].group.group_name,
+                            'Backup')
+        self.assertNotEqual(matches[1].group.group_name,
+                            'Backup')
+
 
 if __name__ == '__main__':
     unittest.main()
