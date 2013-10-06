@@ -62,7 +62,11 @@ def do_list(args):
     t = PrettyTable(['Title', 'Uuid', 'GroupName'])
     t.align['Title'] = 'l'
     t.align['GroupName'] = 'l'
-    for entry in sorted(db.entries, key=lambda x: x.title.lower()):
+    if args.term is None:
+        entries = sorted(db.entries, key=lambda x: x.title.lower())
+    else:
+        entries = _search_for_entry(db, args.term)
+    for entry in entries:
         if entry.group.group_name == 'Backup':
             continue
         t.add_row([entry.title, entry.uuid, entry.group.group_name])
@@ -72,24 +76,11 @@ def do_list(args):
 def do_get(args):
     db = create_db(args)
     try:
-        entry = db.find_by_uuid(args.entry_id)
-    except EntryNotFoundError:
-        try:
-            entry = db.find_by_title(args.entry_id)
-        except EntryNotFoundError:
-            # Last try, do a fuzzy match and see if we come up
-            # with anything.
-            matches = db.fuzzy_search_by_title(args.entry_id)
-            if not matches:
-                sys.stderr.write(
-                    "Could not find an entry for: %s\n" % args.entry_id)
-                return
-            else:
-                # There could be multiple fuzzy matches so we pick
-                # the first one.  The fuzzy_search_by_title returns
-                # the matches by closeness so the first element is
-                # the closest match.
-                entry = matches[0]
+        entry = _search_for_entry(db, args.entry_id)[0]
+    except EntryNotFoundError as e:
+        sys.stderr.write(str(e))
+        sys.stderr.write("\n")
+        return
     default_fields = ['title', 'username', 'url', 'notes']
     if args.entry_fields:
         fields = args.entry_fields
@@ -101,6 +92,23 @@ def do_get(args):
     if args.clipboard_copy:
         clipboard.copy(entry.password)
         sys.stderr.write("\nPassword has been copied to clipboard.\n")
+
+
+def _search_for_entry(db, term):
+    entries = None
+    try:
+        entries = [db.find_by_uuid(term)]
+    except EntryNotFoundError:
+        try:
+            entries = [db.find_by_title(term)]
+        except EntryNotFoundError:
+            # Last try, do a fuzzy match and see if we come up
+            # with anything.
+            entries = db.fuzzy_search_by_title(term)
+            if not entries:
+                raise EntryNotFoundError(
+                    "Could not find an entry for: %s" % term)
+    return entries
 
 
 def merge_config_file_values(args):
@@ -124,6 +132,10 @@ def create_parser():
     subparsers = parser.add_subparsers()
 
     list_parser = subparsers.add_parser('list', help='List entries')
+    list_parser.add_argument('term', nargs='?', help='List entries that '
+                             'match the specified term.  Can be an entry id, '
+                             'a uuid, or anything else supported by the "get" '
+                             'command.')
     list_parser.set_defaults(run=do_list)
 
     get_parser = subparsers.add_parser('get', help='Get password for entry')
