@@ -122,6 +122,7 @@ Changelog
 * [docs] Add section on key files.
 * [docs] Add section on config files.
 * [docs] Switch to guzzle sphinx theme.
+* [feature] Support linux clipboard copy via xclip.
 
 
 ==================
