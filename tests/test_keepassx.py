@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import hashlib
 import unittest
 from datetime import datetime
 
@@ -16,7 +15,6 @@ def open_data_file(name):
 class TestKeepassX(unittest.TestCase):
     def setUp(self):
         self.kdb_contents = open_data_file('password.kdb').read()
-
 
     def test_parse_header(self):
         # I've basically created a kdb file via the GUI and am now
@@ -91,7 +89,7 @@ class TestKeepassX(unittest.TestCase):
     def test_find_entry_does_not_exist(self):
         db = Database(self.kdb_contents, 'password')
         with self.assertRaises(EntryNotFoundError):
-            entry = db.find_by_uuid('baduuid')
+            db.find_by_uuid('baduuid')
 
     def test_find_entry_by_title(self):
         db = Database(self.kdb_contents, 'password')
@@ -121,7 +119,7 @@ class TestKeepassX(unittest.TestCase):
     def test_find_entry_by_title_does_not_exist(self):
         db = Database(self.kdb_contents, 'password')
         with self.assertRaises(EntryNotFoundError):
-            entry = db.find_by_title('badtitle')
+            db.find_by_title('badtitle')
 
     def test_64byte_key(self):
         # keepassx has some special casing of key files if they're

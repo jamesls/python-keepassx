@@ -79,7 +79,8 @@ class TestCLI(unittest.TestCase):
             return captured.getvalue()
 
     def test_open_with_password_and_keyfile(self):
-        output = self.kp_run('kp -d ./passwordkey.kdb -k ./passwordkey.key list')
+        output = self.kp_run(
+            'kp -d ./passwordkey.kdb -k ./passwordkey.key list')
         self.assertIn('c4d301502050cd695e353b16094be4a7', output)
         self.assertIn('mytitle', output)
         self.assertIn('Internet', output)

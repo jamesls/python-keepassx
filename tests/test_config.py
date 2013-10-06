@@ -14,7 +14,7 @@ class TestConfigMerging(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.NamedTemporaryFile()
         self.config_patch = mock.patch('keepassx.main.CONFIG_FILENAME',
-                                        self.temp.name)
+                                       self.temp.name)
         self.config_patch.start()
 
     def tearDown(self):
@@ -39,7 +39,6 @@ class TestConfigMerging(unittest.TestCase):
         self.assertEqual(args.key_file, 'keyfile')
 
     def test_config_file_not_a_dict(self):
-        tmp_filename = '/tmp/foobar'
         self.set_config_values(None)
         parser = create_parser()
         args = parser.parse_args('-d foo list'.split())

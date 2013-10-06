@@ -22,7 +22,8 @@ setup(
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+        'License :: OSI Approved :: '
+        'GNU General Public License v2 or later (GPLv2+)',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
     ],

@@ -31,7 +31,7 @@ class Header(object):
       [16 bytes] BYTE{16} aEncryptionIV
       [ 4 bytes] DWORD    dwGroups        Number of groups in database
       [ 4 bytes] DWORD    dwEntries       Number of entries in database
-      [32 bytes] BYTE{32} aContentsHash   SHA-256 hash value of the plain contents
+      [32 bytes] BYTE{32} aContentsHash   SHA-256 of the plain contents
       [32 bytes] BYTE{32} aMasterSeed2    Used for the dwKeyEncRounds AES
                                           master key transformations
       [ 4 bytes] DWORD    dwKeyEncRounds  See above; number of transformations
@@ -43,8 +43,8 @@ class Header(object):
         * PWM_FLAG_RIJNDAEL (2) for AES (Rijndael).
         * PWM_FLAG_ARCFOUR  (4) for ARC4.
         * PWM_FLAG_TWOFISH  (8) for Twofish.
-      - aMasterSeed is a salt that gets hashed with the transformed user master key
-        to form the final database data encryption/decryption key.
+      - aMasterSeed is a salt that gets hashed with the transformed user master
+        key to form the final database data encryption/decryption key.
         * FinalKey = SHA-256(aMasterSeed, TransformedUserMasterKey)
       - aEncryptionIV is the initialization vector used by AES/Twofish for
         encrypting/decrypting the database data.
@@ -309,7 +309,6 @@ class Database(object):
 
         """
         # Exact matches trump
-        found = []
         for entry in self.entries:
             if entry.title == title:
                 return [entry]
@@ -326,7 +325,7 @@ class Database(object):
         if entries:
             return entries
         # Finally close matches that might have mispellings.
-        entry_map= {entry.title.lower(): entry for entry in self.entries}
+        entry_map = {entry.title.lower(): entry for entry in self.entries}
         matches = difflib.get_close_matches(
             title.lower(), entry_map.keys(), cutoff=0.7)
         if matches:
@@ -425,9 +424,9 @@ class DateType(BaseType):
         # Kdb3Database.cpp: Kdb3Database::dateFromPackedStruct5
         uchar = struct.unpack('<5B', payload)
         year = (uchar[0] << 6) | (uchar[1] >> 2)
-        month = ((uchar[1] & 0x00000003) << 2) | (uchar[2] >> 6);
+        month = ((uchar[1] & 0x00000003) << 2) | (uchar[2] >> 6)
         day = (uchar[2] >> 1) & 0x0000001F
         hour = ((uchar[2] & 0x00000001) << 4) | (uchar[3] >> 4)
-        minutes = ((uchar[3] &0x0000000F) << 2) | (uchar[4] >> 6)
+        minutes = ((uchar[3] & 0x0000000F) << 2) | (uchar[4] >> 6)
         seconds = uchar[4] & 0x0000003F
         return datetime.datetime(year, month, day, hour, minutes, seconds)

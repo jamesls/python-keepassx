@@ -12,7 +12,7 @@ def copy(text):
             _CLIPBOARD = _PLATFORMS[platform.system()]()
         except KeyError:
             raise ValueError("Unsupported clipbaord for platform %s" %
-                             system.platform())
+                             platform.system())
     _CLIPBOARD.copy(text)
 
 
@@ -45,4 +45,3 @@ _PLATFORMS = {
     'Linux': LinuxClipboard,
     'Darwin': OSXClipBoard,
 }
-
