@@ -40,8 +40,11 @@ You can also get a username/password::
 
 Check out the `docs`_ and the `getting started guide`_ for more info.
 
+Check out the `changelog`_ to see what's in the latest release.
+
 Python KeepassX is an early project and is undergoing constant development.
 
 
 .. _docs: http://keepassx.readthedocs.org/
 .. _getting started guide: http://keepassx.readthedocs.org/en/latest/gettingstarted.html
+.. _changelog: http://keepassx.readthedocs.org/en/latest/#changelog
