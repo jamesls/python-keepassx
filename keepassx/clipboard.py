@@ -2,18 +2,18 @@ import subprocess
 import platform
 
 
-_CLIPBOARD = None
-
 
 def copy(text):
-    global _CLIPBOARD
-    if _CLIPBOARD is None:
-        try:
-            _CLIPBOARD = _PLATFORMS[platform.system()]()
-        except KeyError:
-            raise ValueError("Unsupported clipbaord for platform %s" %
-                             platform.system())
-    _CLIPBOARD.copy(text)
+    get_clipboard().copy(text)
+
+
+def get_clipboard():
+    try:
+        platform_clipboard = _PLATFORMS[platform.system()]()
+    except KeyError:
+        raise ValueError("Unsupported clipbaord for platform %s" %
+                            platform.system())
+    return platform_clipboard
 
 
 class ClipBoard(object):
