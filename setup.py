@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='keepassx',
-    version='0.0.2',
+    version='0.0.3',
     description="Python API and CLI for KeePassX",
     long_description=open(os.path.join(os.path.dirname(__file__),
                                        'README.rst')).read(),
