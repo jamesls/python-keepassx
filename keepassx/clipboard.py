@@ -2,7 +2,6 @@ import subprocess
 import platform
 
 
-
 def copy(text):
     get_clipboard().copy(text)
 
@@ -12,7 +11,7 @@ def get_clipboard():
         platform_clipboard = _PLATFORMS[platform.system()]()
     except KeyError:
         raise ValueError("Unsupported clipbaord for platform %s" %
-                            platform.system())
+                         platform.system())
     return platform_clipboard
 
 
