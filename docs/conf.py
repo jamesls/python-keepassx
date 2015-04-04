@@ -44,9 +44,6 @@ release = '0.0.3'
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build']
 
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'guzzle_sphinx_theme.GuzzleStyle'
-
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
@@ -59,6 +56,9 @@ html_translator_class = 'guzzle_sphinx_theme.HTMLTranslator'
 html_theme_path = guzzle_sphinx_theme.html_theme_path()
 html_theme = 'guzzle_sphinx_theme'
 
+html_sidebars = {
+    '**': ['logo-text.html', 'globaltoc.html', 'searchbox.html']
+}
 
 html_static_path = ['_static']
 
@@ -82,11 +82,6 @@ html_theme_options = {
     #"index_template": "special_index.html",
 
     # Set the name of the project to appear in the nav menu
-    "project_nav_name": "python-keepassx",
-
-    # Set your GitHub user and repo to enable GitHub stars links
-    "github_user": "jamesls",
-    "github_repo": "python-keepassx",
 
     # Set your Disqus short name to enable comments
     #"disqus_comments_shortname": "my_disqus_comments_short_name",
@@ -94,14 +89,8 @@ html_theme_options = {
     # Set you GA account ID to enable tracking
     "google_analytics_account": "UA-28869503-3",
 
-    # Set a custom class to add to the navbar (e.g. navbar-inverse)
-    "navbar_class": "",
-
     # Path to a touch icon
     "touch_icon": "",
-
-    # Set to true to bind left and right key events to turn the page
-    "bind_key_events": True,
 
     # Specify a base_url used to generate sitemap.xml links. If not
     # specified, then no sitemap will be built.
