@@ -36,6 +36,13 @@ def encode_password(password):
     if not isinstance(password, TEXT_TYPE):
         # We'll need to decode back into text and then
         # encode to bytes.
+        # First we need to try to get the encoding from stdin,
+        # keeping in mind that sometimes we either don't
+        # have an encoding attribute or that it can be None
+        # (if it's replaced with a StringIO for example).
+        encoding = getattr(sys.stdin, 'encoding', 'utf-8')
+        if encoding is None:
+            encoding = 'utf-8'
         password = password.decode(sys.stdin.encoding)
     return password.encode(KP_PASSWORD_ENCODING, 'replace')
 
