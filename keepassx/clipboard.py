@@ -16,28 +16,24 @@ def get_clipboard():
 
 
 class ClipBoard(object):
+    COPY_PROCESS = []
+
     def copy(self, text):
-        raise NotImplementedError("copy")
+        process = subprocess.Popen(self.COPY_PROCESS, stdin=subprocess.PIPE)
+        process.communicate(text.encode('utf-8'))
+        if process.returncode != 0:
+            raise Exception("Couldn't copy text to clipboard.")
 
     def paste(self):
         raise NotImplementedError("paste")
 
 
 class OSXClipBoard(ClipBoard):
-    def copy(self, text):
-        process = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
-        process.communicate(text)
-        if process.returncode != 0:
-            raise Exception("Couldn't copy text to clipboard.")
+    COPY_PROCESS = ['pbcopy']
 
 
 class LinuxClipboard(ClipBoard):
-    def copy(self, text):
-        process = subprocess.Popen(['xclip', '-selection', 'clipboard'],
-                                   stdin=subprocess.PIPE)
-        process.communicate(text)
-        if process.returncode != 0:
-            raise Exception("Couldn't copy text to clipboard.")
+    COPY_PROCESS = ['xclip', '-selection', 'clipboard']
 
 
 _PLATFORMS = {
