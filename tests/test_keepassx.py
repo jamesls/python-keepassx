@@ -5,6 +5,7 @@ import unittest
 from datetime import datetime
 
 from keepassx.db import Database, Header, EntryNotFoundError
+from keepassx.db import encode_password
 
 
 def open_data_file(name):
@@ -15,6 +16,7 @@ def open_data_file(name):
 class TestKeepassX(unittest.TestCase):
     def setUp(self):
         self.kdb_contents = open_data_file('password.kdb').read()
+        self.password = b'password'
 
     def test_parse_header(self):
         # I've basically created a kdb file via the GUI and am now
@@ -42,7 +44,7 @@ class TestKeepassX(unittest.TestCase):
 
     def test_database_metadata(self):
         """Header is accessible from database object as the metadata attr."""
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         self.assertEqual(db.metadata.version, 0x30002)
 
     def test_encryption_type(self):
@@ -52,14 +54,14 @@ class TestKeepassX(unittest.TestCase):
         self.assertEqual(header.encryption_type, 'Rijndael')
 
     def test_parse_groups_from_decrypted_data(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         self.assertEqual(len(db.groups), 2)
         self.assertEqual(db.groups[0].group_name, 'Internet')
         self.assertEqual(db.groups[0].groupid, 1876827345)
         self.assertEqual(db.groups[0].level, 0)
 
     def test_parse_entries_from_decrypted_data(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         self.assertEqual(len(db.entries), 1)
         entry = db.entries[0]
         self.assertEqual(entry.title, 'mytitle')
@@ -74,30 +76,30 @@ class TestKeepassX(unittest.TestCase):
     def test_parse_entries_from_decrypted_data_with_key_file(self):
         kdb_contents = open_data_file('passwordkey.kdb').read()
         key_file_contents = open_data_file('passwordkey.key').read()
-        db = Database(kdb_contents, 'password', key_file_contents)
+        db = Database(kdb_contents, self.password, key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
     def test_entries_can_be_grouped_by_groupid(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
     def test_find_entry_by_uuid(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         entry = db.find_by_uuid('c4d301502050cd695e353b16094be4a7')
         self.assertEqual(entry.uuid, 'c4d301502050cd695e353b16094be4a7')
 
     def test_find_entry_does_not_exist(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         with self.assertRaises(EntryNotFoundError):
             db.find_by_uuid('baduuid')
 
     def test_find_entry_by_title(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         entry = db.find_by_title('mytitle')
         self.assertEqual(entry.title, 'mytitle')
 
     def test_search_entry_by_title(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         entry = db.fuzzy_search_by_title('mytitle')[0]
         self.assertEqual(entry.title, 'mytitle')
 
@@ -111,13 +113,13 @@ class TestKeepassX(unittest.TestCase):
         self.assertEqual(entry, [])
 
     def test_search_entry_with_typos(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         # 'le' has been transposed.
         entry = db.fuzzy_search_by_title('mytitel')[0]
         self.assertEqual(entry.title, 'mytitle')
 
     def test_find_entry_by_title_does_not_exist(self):
-        db = Database(self.kdb_contents, 'password')
+        db = Database(self.kdb_contents, self.password)
         with self.assertRaises(EntryNotFoundError):
             db.find_by_title('badtitle')
 
@@ -126,7 +128,7 @@ class TestKeepassX(unittest.TestCase):
         # 32 or 64 bytes long.
         kdb_contents = open_data_file('password64byte.kdb').read()
         key_file_contents = open_data_file('password64byte.key').read()
-        db = Database(kdb_contents, 'password', key_file_contents)
+        db = Database(kdb_contents, self.password, key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
     def test_32byte_key(self):
@@ -134,20 +136,20 @@ class TestKeepassX(unittest.TestCase):
         # 32 or 64 bytes long.
         kdb_contents = open_data_file('password32byte.kdb').read()
         key_file_contents = open_data_file('password32byte.key').read()
-        db = Database(kdb_contents, 'password', key_file_contents)
+        db = Database(kdb_contents, self.password, key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
     def test_64byte_key_no_password(self):
         kdb_contents = open_data_file('passwordlesskey.kdb').read()
         key_file_contents = open_data_file('passwordlesskey.key').read()
-        db = Database(kdb_contents, '', key_file_contents)
+        db = Database(kdb_contents, b'', key_file_contents)
         self.assertEqual(db.entries[0].group.group_name, 'Internet')
 
     def test_multi_entry_exact_search(self):
         # This particular kdb file has multiple entries with the title
         # "mytitle".
         kdb_contents = open_data_file('passwordmultientry.kdb').read()
-        db = Database(kdb_contents, 'password')
+        db = Database(kdb_contents, self.password)
         self.assertEqual(len(db.entries), 3)
         matches = db.fuzzy_search_by_title('mytitle')
         self.assertEqual(len(matches), 3)
@@ -157,7 +159,7 @@ class TestKeepassX(unittest.TestCase):
 
     def test_multi_entry_case_insensitive_search(self):
         kdb_contents = open_data_file('passwordmultientry.kdb').read()
-        db = Database(kdb_contents, 'password')
+        db = Database(kdb_contents, self.password)
         self.assertEqual(len(db.entries), 3)
         matches = db.fuzzy_search_by_title('mYtItlE')
         self.assertEqual(len(matches), 3)
@@ -167,7 +169,7 @@ class TestKeepassX(unittest.TestCase):
 
     def test_fuzzy_search_ignore_groups(self):
         kdb_contents = open_data_file('passwordmultientry.kdb').read()
-        db = Database(kdb_contents, 'password')
+        db = Database(kdb_contents, self.password)
         # There are 3 entries in the db with 'mytitle' titles.
         # 1 of the entries is in the Backup group.  If we
         # specify ignore_groups in our search, we should not
@@ -182,6 +184,35 @@ class TestKeepassX(unittest.TestCase):
                             'Backup')
         self.assertNotEqual(matches[1].group.group_name,
                             'Backup')
+
+    def test_master_password_latin1(self):
+        password = u"\u00f6\u00e4\u00fc\u00df"
+        kdb_contents = open_data_file('password-latin1.kdb').read()
+        db = Database(kdb_contents, encode_password(password))
+        self.assertEqual(len(db.groups), 2)
+
+    def test_master_password_unicode(self):
+        kdb_contents = open_data_file('password-unicode.kdb').read()
+        db = Database(kdb_contents, encode_password(u'password\u2713'))
+        # Verify we can read anything from the db.
+        self.assertEqual(len(db.groups), 2)
+
+
+class TestEncodePassword(unittest.TestCase):
+    def test_encode_ascii(self):
+        self.assertEqual(encode_password('foo'), b'foo')
+
+    def test_encode_cp1252_compatible_chars(self):
+        self.assertEqual(encode_password(u"\u00f6"), b'\xf6')
+
+    def test_non_cp1252_compatible_chars_replaced(self):
+        self.assertEqual(encode_password(u"\u2713"), b'?')
+        # And to show you how terrible keepass's encoding
+        # is:
+        self.assertEqual(encode_password(u"\u2714"), b'?')
+        # Or in other words:
+        self.assertEqual(encode_password(u"\u2714"),
+                         encode_password(u"\u2713"))
 
 
 if __name__ == '__main__':

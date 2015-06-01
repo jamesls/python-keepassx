@@ -1,3 +1,4 @@
+import sys
 import struct
 import hashlib
 import datetime
@@ -9,11 +10,34 @@ from Crypto.Cipher import AES
 from six.moves import xrange
 from six import integer_types
 
+
+if sys.version_info[0] == 2:
+    TEXT_TYPE = unicode
+else:
+    TEXT_TYPE = str
 SYSTEM_USER_UUID = '00000000000000000000000000000000'
+# It's worth noting that keepassx has logic to try
+# encoding the password as both latin1 and utf-8
+# if this encoding doesn't work.  We aren't implementing
+# that logic here as all modern keepassx versions just
+# use cp1252.
+KP_PASSWORD_ENCODING = 'cp1252'
+
 
 
 class EntryNotFoundError(Exception):
     pass
+
+
+def encode_password(password):
+    # keepassx uses cp1252 encoding for its password
+    # so we need to ensure that the password is encoded
+    # as this.
+    if not isinstance(password, TEXT_TYPE):
+        # We'll need to decode back into text and then
+        # encode to bytes.
+        password = password.decode(sys.stdin.encoding)
+    return password.encode(KP_PASSWORD_ENCODING, 'replace')
 
 
 class Header(object):
@@ -115,7 +139,7 @@ class Database(object):
         self.metadata = Header(contents[:Header.HEADER_SIZE])
         payload = self._decrypt_payload(
             contents[Header.HEADER_SIZE:],
-            self._calculate_key(password.encode('utf-8'), key_file_contents,
+            self._calculate_key(password, key_file_contents,
                                 self.metadata.master_seed,
                                 self.metadata.master_seed2,
                                 self.metadata.key_encryption_rounds),

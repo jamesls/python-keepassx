@@ -6,7 +6,7 @@ import getpass
 import yaml
 from prettytable import PrettyTable
 
-from keepassx.db import Database, EntryNotFoundError
+from keepassx.db import Database, EntryNotFoundError, encode_password
 from keepassx import clipboard
 from keepassx import __version__
 
@@ -43,6 +43,7 @@ def create_db(args):
         password = os.environ['KP_INSECURE_PASSWORD']
     else:
         password = getpass.getpass('Password: ')
+    password = encode_password(password)
     db_file = open_db_file(args)
     key_file = open_key_file(args)
     if key_file is not None:
