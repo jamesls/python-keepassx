@@ -43,7 +43,7 @@ def encode_password(password):
         encoding = getattr(sys.stdin, 'encoding', 'utf-8')
         if encoding is None:
             encoding = 'utf-8'
-        password = password.decode(sys.stdin.encoding)
+        password = password.decode(encoding)
     return password.encode(KP_PASSWORD_ENCODING, 'replace')
 
 
