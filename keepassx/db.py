@@ -24,7 +24,6 @@ SYSTEM_USER_UUID = '00000000000000000000000000000000'
 KP_PASSWORD_ENCODING = 'cp1252'
 
 
-
 class EntryNotFoundError(Exception):
     pass
 
