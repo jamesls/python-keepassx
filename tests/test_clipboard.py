@@ -36,6 +36,15 @@ class TestClipboard(unittest.TestCase):
             clipboard.copy('foo')
             mock_copy.assert_called_with('foo')
 
+    def test_binary_written_to_stdin(self):
+        unicode_password = u'\u2713'
+        copier = clipboard.OSXClipBoard()
+        with mock.patch('subprocess.Popen') as popen:
+            popen.return_value.returncode = 0
+            copier.copy(unicode_password)
+            popen.return_value.communicate.assert_called_with(
+                unicode_password.encode('utf-8'))
+
 
 if __name__ == '__main__':
     unittest.main()
