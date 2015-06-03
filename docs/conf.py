@@ -56,10 +56,6 @@ html_translator_class = 'guzzle_sphinx_theme.HTMLTranslator'
 html_theme_path = guzzle_sphinx_theme.html_theme_path()
 html_theme = 'guzzle_sphinx_theme'
 
-html_sidebars = {
-    '**': ['logo-text.html', 'globaltoc.html', 'searchbox.html']
-}
-
 html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
