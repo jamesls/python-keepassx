@@ -17,6 +17,7 @@ Python-keepassx: **simple**, command line interface to your passwords.
 
 
 ::
+
     $ kp -d password.kdb list
     Password:
 
@@ -29,7 +30,6 @@ Python-keepassx: **simple**, command line interface to your passwords.
 
     $ kp -d demo.kdb get Github
     Password:
-
 
     title:     Github
     username:  githubuser
