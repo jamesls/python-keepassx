@@ -62,3 +62,4 @@ Check out the `changelog`_ to see what's in the latest release.
 .. _docs: http://keepassx.readthedocs.org/
 .. _getting started guide: http://keepassx.readthedocs.org/en/latest/gettingstarted.html
 .. _changelog: http://keepassx.readthedocs.org/en/latest/#changelog
+.. _KeePassX: https://www.keepassx.org/
