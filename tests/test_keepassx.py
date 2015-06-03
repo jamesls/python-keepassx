@@ -213,7 +213,3 @@ class TestEncodePassword(unittest.TestCase):
         # Or in other words:
         self.assertEqual(encode_password(u"\u2714"),
                          encode_password(u"\u2713"))
-
-
-if __name__ == '__main__':
-    unittest.main()

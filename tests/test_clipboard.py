@@ -44,7 +44,3 @@ class TestClipboard(unittest.TestCase):
             copier.copy(unicode_password)
             popen.return_value.communicate.assert_called_with(
                 unicode_password.encode('utf-8'))
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -108,7 +108,3 @@ class TestCLI(unittest.TestCase):
                 self.kp_run('kp ')
         stderr = captured.getvalue()
         self.assertIn('kp: error: too few arguments', stderr)
-
-
-if __name__ == '__main__':
-    unittest.main()
