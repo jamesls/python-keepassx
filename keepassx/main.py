@@ -182,4 +182,8 @@ def main(args=None):
     parser = create_parser()
     args = _parse_args(parser, args)
     merge_config_file_values(args)
-    args.run(args)
+    try:
+        args.run(args)
+    except KeyboardInterrupt:
+        sys.stdout.write("\n")
+        return 1
