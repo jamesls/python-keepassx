@@ -130,7 +130,7 @@ Table of Contents
 Changelog
 =========
 
-1.0.0
+0.1.0
 -----
 
 * [feature] Add ``--stdin`` option to read the master password from stdin.
