@@ -34,13 +34,13 @@ can read and write the database files that keepassx uses, and in doing so
 allows you to access your passwords.
 
 
-I've never heard of a password manager, what is it?
----------------------------------------------------
+What's a Password Manager?
+--------------------------
 
 We use things that require passwords.  From social media such as Facebook,
 Twitter, and Instagram to things like online banking and tax returns nearly
 everything we access requires a username and password.  It's not uncommon these
-days to require over 100 passwords.
+days to have to deal with over 100 passwords.
 
 If you're following `password best practices`_, you should not be using the
 same password for more than one site.  This makes sense, if you use the same
@@ -53,7 +53,8 @@ passwords?
 
 That's where a password manager comes into play.  A password manager is an
 application that you use to enter all of your passwords and usernames.  This
-database of passwords is then secured with some form of a master password.
+database of passwords is then secured with some form of a master password
+and optional key file.
 
 Now whenver you need to log in to a site, you use the password manager, and
 enter your master password to gain access to the site specific password.
@@ -85,6 +86,19 @@ luck.
 
 
 
+Aren't there similar projects already?
+--------------------------------------
+
+Yes.  This project is different because it has:
+
+* A simple, straightforward API.
+* Full support for key files.
+* Both a command line interface and a python API.
+* Support for python 2.7, 3.3, and 3.4 (and higher).
+* High test coverage
+* Thorough documentation.
+
+
 I'd like to try out this project, what do I do?
 -----------------------------------------------
 
@@ -111,9 +125,20 @@ Table of Contents
    topics
    reference
 
+
 =========
 Changelog
 =========
+
+1.0.0
+-----
+
+* [feature] Add ``--stdin`` option to read the master password from stdin.
+* [bugfix] Fix issue with entries that contained non-ascii characters in their
+  passwords (issue 4).
+* [bugfix] Fix issue with master password containing non-ascii characters
+  (issue 3).
+
 
 0.0.3
 -----

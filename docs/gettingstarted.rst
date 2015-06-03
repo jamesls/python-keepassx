@@ -23,7 +23,6 @@ to install ``keepassx``.  In this tutorial we'll use pip::
 Should should now have a ``kp`` executable available on the command line::
 
     $ kp --version
-    kp version 0.0.2
 
 You are now ready to start using ``keepassx``.
 
@@ -31,7 +30,7 @@ You are now ready to start using ``keepassx``.
 First Steps
 ===========
 
-To get started, we're going to use a test database so can expirement with
+To get started, we're going to use a demo database so can expirement with
 ``kp`` features.
 
 First we need to download the demo database.  You can download the demo
