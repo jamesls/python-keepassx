@@ -28,6 +28,10 @@ class EntryNotFoundError(Exception):
     pass
 
 
+class InvalidPasswordError(Exception):
+    pass
+
+
 def encode_password(password):
     # keepassx uses cp1252 encoding for its password
     # so we need to ensure that the password is encoded
@@ -166,8 +170,8 @@ class Database(object):
             extra = ord(extra)
         payload = payload[:len(payload)-extra]
         if self.metadata.contents_hash != hashlib.sha256(payload).digest():
-            raise ValueError("Decryption failed, decrypted checksum "
-                             "does not match.")
+            raise InvalidPasswordError(
+                "Decryption failed, decrypted checksum does not match.")
         return payload
 
     def _calculate_key(self, password, key_file_contents,

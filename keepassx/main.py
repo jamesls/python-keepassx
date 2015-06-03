@@ -6,7 +6,8 @@ import getpass
 import yaml
 from prettytable import PrettyTable
 
-from keepassx.db import Database, EntryNotFoundError, encode_password
+from keepassx.db import Database, encode_password
+from keepassx.db import InvalidPasswordError, EntryNotFoundError
 from keepassx import clipboard
 from keepassx import __version__
 
@@ -187,3 +188,6 @@ def main(args=None):
     except KeyboardInterrupt:
         sys.stdout.write("\n")
         return 1
+    except InvalidPasswordError:
+        sys.stderr.write("Invalid password, could not open "
+                         "password database.\n")

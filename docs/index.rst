@@ -138,6 +138,7 @@ Changelog
   passwords (issue 4).
 * [bugfix] Fix issue with master password containing non-ascii characters
   (issue 3).
+* [bugfix] Don't print traceback on invalid passwords.
 
 
 0.0.3
