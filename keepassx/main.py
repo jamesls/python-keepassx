@@ -61,7 +61,6 @@ def create_db(args):
 
 def do_list(args):
     db = create_db(args)
-    print("Entries:\n")
     t = PrettyTable(['Title', 'Uuid', 'GroupName'])
     t.align['Title'] = 'l'
     t.align['GroupName'] = 'l'
