@@ -21,10 +21,12 @@ setup(
         'six>=1.3.0,<2.0.0',
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: '
         'GNU General Public License v2 or later (GPLv2+)',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Topic :: System :: Systems Administration',
     ],
 )
