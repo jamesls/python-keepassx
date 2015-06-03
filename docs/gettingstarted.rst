@@ -23,7 +23,6 @@ to install ``keepassx``.  In this tutorial we'll use pip::
 Should should now have a ``kp`` executable available on the command line::
 
     $ kp --version
-    kp version 0.0.2
 
 You are now ready to start using ``keepassx``.
 
@@ -31,7 +30,7 @@ You are now ready to start using ``keepassx``.
 First Steps
 ===========
 
-To get started, we're going to use a test database so can expirement with
+To get started, we're going to use a demo database so can expirement with
 ``kp`` features.
 
 First we need to download the demo database.  You can download the demo
@@ -203,4 +202,5 @@ planned feature).  For now you will have to `download keepassx
 
 Another powerful feature of keepassx worth investivating is using keyfiles.
 ``python-keepassx`` supports keyfiles via the `-k` argument or the
-``KP_KEY_FILE`` environment variable.
+``KP_KEY_FILE`` environment variable.  Check out the :doc:`topics` Guide for
+more info on setting this up..

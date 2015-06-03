@@ -31,9 +31,6 @@ release = '0.0.3'
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build']
 
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'guzzle_sphinx_theme.GuzzleStyle'
-
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -41,7 +38,6 @@ pygments_style = 'guzzle_sphinx_theme.GuzzleStyle'
 html_translator_class = 'guzzle_sphinx_theme.HTMLTranslator'
 html_theme_path = guzzle_sphinx_theme.html_theme_path()
 html_theme = 'guzzle_sphinx_theme'
-
 
 html_static_path = ['_static']
 
@@ -60,23 +56,12 @@ man_pages = [
 html_theme_options = {
 
     # Set the name of the project to appear in the nav menu
-    "project_nav_name": "python-keepassx",
-
-    # Set your GitHub user and repo to enable GitHub stars links
-    "github_user": "jamesls",
-    "github_repo": "python-keepassx",
 
     # Set you GA account ID to enable tracking
     "google_analytics_account": "UA-28869503-3",
 
-    # Set a custom class to add to the navbar (e.g. navbar-inverse)
-    "navbar_class": "",
-
     # Path to a touch icon
     "touch_icon": "",
-
-    # Set to true to bind left and right key events to turn the page
-    "bind_key_events": True,
 
     # Specify a base_url used to generate sitemap.xml links. If not
     # specified, then no sitemap will be built.
