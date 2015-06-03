@@ -15,10 +15,10 @@ setup(
     url="https://github.com/jamesls/python-keepassx",
     scripts=['bin/kp'],
     install_requires=[
-        'pycrypto==2.6',
-        'PyYAML==3.10',
+        'pycrypto>=2.6.1,<3.0.0',
+        'PyYAML>=3.10,<4.0.0',
         'prettytable==0.7.2',
-        'six==1.3.0',
+        'six>=1.3.0,<2.0.0',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
