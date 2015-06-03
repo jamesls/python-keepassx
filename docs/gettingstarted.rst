@@ -202,4 +202,5 @@ planned feature).  For now you will have to `download keepassx
 
 Another powerful feature of keepassx worth investivating is using keyfiles.
 ``python-keepassx`` supports keyfiles via the `-k` argument or the
-``KP_KEY_FILE`` environment variable.
+``KP_KEY_FILE`` environment variable.  Check out the :doc:`topics` Guide for
+more info on setting this up..
