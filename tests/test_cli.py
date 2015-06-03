@@ -114,5 +114,6 @@ class TestCLI(unittest.TestCase):
     def test_can_read_password_from_stdin(self):
         stdin = StringIO('password')
         with mock.patch('sys.stdin', stdin):
-            output = self.kp_run('kp -s -d ./password.kdb list', provide_password=False)
+            output = self.kp_run('kp -s -d ./password.kdb list',
+                                 provide_password=False)
             self.assertIn('Internet', output)
