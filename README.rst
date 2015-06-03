@@ -7,14 +7,16 @@ Python KeepassX
 .. image:: https://coveralls.io/repos/jamesls/python-keepassx/badge.png?branch=master
    :target: https://coveralls.io/r/jamesls/python-keepassx?branch=master
 
-Python keepassx is a python library and a command line utility for working with
-keepassx database files (``.kdb`` files).  This allow you to programatically
-access your usernames/passwords instead of having to use the KeePassX GUI.
+`KeePassX`_ is a cross platform password manager.  However, KeePassX is a desktop
+GUI application.  That's where ``python-keepassx`` comes in.  By using
+``python-keepassx``, you can access your passwords using a command line
+interface to KeePassX.  You can also use the python library directly in your
+own python applications.
 
-The ``keepassx`` module currently supports read only operations (adding entries
-and creating kdb files are a planned feature).  You can list
-your entries::
+Python-keepassx: **simple**, command line interface to your passwords.
 
+
+::
     $ kp -d password.kdb list
     Password:
 
@@ -24,7 +26,6 @@ your entries::
     | mytitle | c4d301502050cd695e353b16094be4a7 | Internet  |
     +---------+----------------------------------+-----------+
 
-You can also get a username/password::
 
     $ kp -d demo.kdb get Github
     Password:
@@ -38,11 +39,24 @@ You can also get a username/password::
 
     Password has been copied to clipboard.
 
+
+Aren't there similar projects already?
+--------------------------------------
+
+Yes.  This project is different because it has:
+
+* A simple, straightforward API.
+* Full support for key files.
+* Both a command line interface and a python API.
+* Support for python 2.7, 3.3, and 3.4 (and higher).
+
+
+Documentation
+=============
+
 Check out the `docs`_ and the `getting started guide`_ for more info.
 
 Check out the `changelog`_ to see what's in the latest release.
-
-Python KeepassX is an early project and is undergoing constant development.
 
 
 .. _docs: http://keepassx.readthedocs.org/
