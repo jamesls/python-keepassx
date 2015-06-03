@@ -9,6 +9,7 @@ import os
 import sys
 import time
 import unittest
+import mock
 from contextlib import contextmanager
 from six import StringIO
 
@@ -69,8 +70,9 @@ class TestCLI(unittest.TestCase):
         os.chdir(self._original_dir)
         os.environ = self._env
 
-    def kp_run(self, command):
-        self._newenv['KP_INSECURE_PASSWORD'] = 'password'
+    def kp_run(self, command, provide_password=True):
+        if provide_password:
+            self._newenv['KP_INSECURE_PASSWORD'] = 'password'
         if command.startswith('kp '):
             command = command[3:]
         with without_config_file():
@@ -108,3 +110,9 @@ class TestCLI(unittest.TestCase):
                 self.kp_run('kp ')
         stderr = captured.getvalue()
         self.assertIn('kp: error: too few arguments', stderr)
+
+    def test_can_read_password_from_stdin(self):
+        stdin = StringIO('password')
+        with mock.patch('sys.stdin', stdin):
+            output = self.kp_run('kp -s -d ./password.kdb list', provide_password=False)
+            self.assertIn('Internet', output)

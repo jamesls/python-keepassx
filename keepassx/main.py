@@ -41,6 +41,8 @@ def create_db(args):
         # This env var is really intended for testing purposes.
         # No one should be using this var.
         password = os.environ['KP_INSECURE_PASSWORD']
+    elif args.stdin:
+        password = sys.stdin.read()
     else:
         password = getpass.getpass('Password: ')
     password = encode_password(password)
@@ -126,8 +128,20 @@ def merge_config_file_values(args):
 
 def create_parser():
     parser = argparse.ArgumentParser(prog='kp')
-    parser.add_argument('-k', '--key-file')
-    parser.add_argument('-d', '--db-file')
+    parser.add_argument('-d', '--db-file',
+                        help='The filename of your .kdb file.')
+    parser.add_argument('-k', '--key-file',
+                        help='The filename of a keyfile. This option is '
+                             'only necessary if you have a keyfile associated '
+                             'with your .kdb file.')
+    parser.add_argument('-s', '--stdin', action='store_true',
+                        help='Read the master password from stdin. '
+                             'By default, your are prompted to '
+                             'type in the master password.  If this '
+                             'option is specified, the master '
+                             'password will be read from stdin and '
+                             'you will not be prompted for your '
+                             'master password')
     parser.add_argument('--version', action='version',
                         version='%(prog)s version ' + __version__)
     subparsers = parser.add_subparsers()
