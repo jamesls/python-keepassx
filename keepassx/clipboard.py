@@ -36,7 +36,12 @@ class LinuxClipboard(ClipBoard):
     COPY_PROCESS = ['xclip', '-selection', 'clipboard']
 
 
+class WindowsClipboard(ClipBoard):
+    COPY_PROCESS = ['clip']
+
+
 _PLATFORMS = {
     'Linux': LinuxClipboard,
     'Darwin': OSXClipBoard,
+    'Windows': WindowsClipboard,
 }
