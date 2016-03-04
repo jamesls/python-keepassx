@@ -46,6 +46,8 @@ def create_db(args):
         password = sys.stdin.read()
     else:
         password = getpass.getpass('Password: ')
+
+    password = password.strip(' \t\n\r')
     password = encode_password(password)
     db_file = open_db_file(args)
     key_file = open_key_file(args)
@@ -96,6 +98,15 @@ def do_get(args):
         clipboard.copy(entry.password)
         sys.stderr.write("\nPassword has been copied to clipboard.\n")
 
+def do_getpwd(args):
+    db = create_db(args)
+    try:
+        entry = _search_for_entry(db, args.entry_id)[0]
+    except EntryNotFoundError as e:
+        sys.stderr.write(str(e))
+        sys.stderr.write("\n")
+        return
+    print("%s" % (getattr(entry, 'password')))
 
 def _search_for_entry(db, term):
     entries = None
@@ -161,6 +172,11 @@ def create_parser():
                             dest="clipboard_copy", default=True,
                             help="Don't copy the password to the clipboard")
     get_parser.set_defaults(run=do_get)
+
+    getpwd_parser = subparsers.add_parser('getpwd', help='Get password for entry')
+    getpwd_parser.add_argument('entry_id', help='Entry name or uuid.')
+    getpwd_parser.set_defaults(run=do_getpwd)
+
     return parser
 
 
