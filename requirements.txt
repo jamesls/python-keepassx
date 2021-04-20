@@ -1,6 +1,6 @@
 -e .
 mock==1.0.1
-py==1.4.17
+py==1.10.0
 pytest==2.4.2
 pytest-cov==1.6
 pytest-pep8==1.0.5
